@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
+import main.Cas;
+
 
 public class Auto implements Observer{
 
@@ -22,7 +24,7 @@ public class Auto implements Observer{
 	public float[] poloha;
 	
 	//soucasny cas
-	public int[] soucCas;
+	public Cas soucCas;
 	
 	//doba nakladani v minutach
 	//1 sud = 5 min
@@ -30,7 +32,7 @@ public class Auto implements Observer{
 	public int dobaNakladani;
 	
 	//cas kdy bude nakladak nalozen
-	public int[] nalozenoCas;
+	public Cas nalozenoCas;
 	
 	/**
 	 * Cesta po tkere auto pojede, obsahuje ID uzlu, bez pocatecniho.
@@ -42,11 +44,14 @@ public class Auto implements Observer{
 	 */
 	public boolean jede;
 	
+	//ID domovskeho uzlu vozu
+	protected final int DOMOV;
 	
-	public Auto()
+	public Auto(int domov)
 	{
 		this.id = Auto.DEF_ID;
 		Auto.DEF_ID++;
+		this.DOMOV = domov;
 	}
 	
 	/**
@@ -79,12 +84,12 @@ public class Auto implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		//predani casu od tridy simulator
-		if(arg1 instanceof int[])
+		if(arg1 instanceof Cas)
 		{
-			this.soucCas = (int[])arg1;
+			this.soucCas = (Cas)arg1;
 			
 			//porovnani soucasneho casu s casem nalozeni
-			if((nalozenoCas[0] == soucCas[0]) && (nalozenoCas[1] == soucCas[1]))
+			if(soucCas.equals(nalozenoCas))
 			{
 				this.dobaNakladani = 0;
 			}

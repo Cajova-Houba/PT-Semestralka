@@ -3,6 +3,7 @@ package graf;
 import java.util.LinkedList;
 import java.util.Observable;
 
+import main.Cas;
 import main.Simulator;
 
 public class Nakladak extends Auto{
@@ -12,7 +13,10 @@ public class Nakladak extends Auto{
 	//seznam zpracovavanych objednavek
 	LinkedList<Objednavka> objednavky;
 	
-	public Nakladak(int[] cas){
+	
+	public Nakladak(Cas cas, int domov){
+		
+		super(domov);
 		
 		this.kDispozici = true;
 		this.objem = 0;
@@ -36,17 +40,8 @@ public class Nakladak extends Auto{
 		if (naloz(obj.objem))
 		{
 			this.objednavky.add(obj);
-			//pridani casu
-			this.dobaNakladani += 5*obj.objem;
-			if(this.dobaNakladani >= 60)
-			{
-				this.nalozenoCas[1] ++;
-				if (this.nalozenoCas[1] >= 24)
-				{
-					this.nalozenoCas[0]++;
-					this.nalozenoCas[1] = 0;
-				}
-			}
+			//pridani casu 5*pocet_sudu
+			nalozenoCas.incCas(5*obj.objem);
 			
 			return true;
 		}
@@ -97,6 +92,7 @@ public class Nakladak extends Auto{
     private void vyloz()
     {
     	float chyba = 0.01f;
+    	Objednavka vyrad = null;
     	for(Objednavka o : this.objednavky)
     	{
     		int[] tmp = Simulator.getPoloha(o.id);
@@ -106,8 +102,13 @@ public class Nakladak extends Auto{
     				System.out.println("Vykladam objednavku: "+o.toString());
     				objem -= o.objem;
     				Simulator.objekty[o.id].sklad += o.objem;
-    			    objednavky.remove(o);
+    			    vyrad = o;
+    			    break;
     		   }
+    	}
+    	if(vyrad != null)
+    	{
+    		this.objednavky.remove(vyrad);
     	}
     }
 	
@@ -123,7 +124,7 @@ public class Nakladak extends Auto{
 		}
 		
 		//auto jede a Simulator vysila cas
-		if(this.jede && arg1 instanceof int[])
+		if(this.jede && arg1 instanceof Cas)
 		{
 			//pokud neni cesta, neni kam jet
 			if (this.cesta.isEmpty())
@@ -142,25 +143,33 @@ public class Nakladak extends Auto{
 			dY = (float) (dY / prep);
 			
 			//pohyb vozidla - rychlosti km/m
-			//pokud by bylo km/h musi se slozite resit prekroceni cile
-			for(int i=0; i< 60;i++)
+
+			this.poloha[0] += dX*RYCHLOST/60;
+			this.poloha[1] += dY*RYCHLOST/60;
+			
+			//test jestli uz neni v cili
+			int chyba = 5;
+			if((Math.abs(this.poloha[0] - cilPoz[0]) < chyba) && 
+					(Math.abs(this.poloha[1] - cilPoz[1]) < chyba))
 			{
-				this.poloha[0] += dX*RYCHLOST/60;
-				this.poloha[1] += dY*RYCHLOST/60;
+				System.out.println("Auto "+this.id+" dojelo do cile: "+this.cesta.getFirst() + " v case: " + super.soucCas);
+				this.poloha[0] = cilPoz[0];
+				this.poloha[1] = cilPoz[1];
 				
-				//test jestli uz neni v cili
-				int chyba = 5;
-				if((Math.abs(this.poloha[0] - cilPoz[0]) < chyba) && 
-						(Math.abs(this.poloha[1] - cilPoz[1]) < chyba))
+				//pokud auto dojelo do sveho domovskeho prekladiste a v ceste je pouze jedinny uzel
+				//vratilo se auto z rozvazeni a muze byt znovu pouzito
+				if((this.DOMOV == this.cesta.getFirst()) &&
+					(this.cesta.size() == 1))
 				{
-					System.out.println("Auto dojelo "+this.id+" do cile: "+this.cesta.getFirst() + " v case: " + super.soucCas[1]);
-					this.poloha[0] = cilPoz[0];
-					this.poloha[1] = cilPoz[1];
-					this.cesta.removeFirst();
-					//nakladak zkusi vylozit pokud je v cili
-					this.vyloz();
-					break;
+					System.out.println("Auto "+this.id+" se vratilo z okruzni jizdy.");
+					this.jede = false;
+					this.kDispozici = true;
 				}
+				
+				this.cesta.removeFirst();
+				//nakladak zkusi vylozit pokud je v cili
+				this.vyloz();
+				
 				
 			}
 		}

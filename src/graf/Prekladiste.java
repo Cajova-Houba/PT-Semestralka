@@ -117,9 +117,9 @@ public class Prekladiste extends Uzel{
 		}
 		
 		//cesta zpatky
-		//vyberCestu(ob.id, this.id, nakl);
-		//nakl.kDispozici = false;
-		//nakl.jede = true;
+		vyberCestu(ob.id, this.id, nakl);
+		nakl.kDispozici = false;
+		nakl.jede = true;
 
 	}
 
@@ -233,7 +233,7 @@ public class Prekladiste extends Uzel{
 		//seznam aut je prazdny, vytvori se nove auto
 		if(this.vozy.isEmpty())
 		{
-			nakl = new Nakladak(Simulator.getCas());
+			nakl = new Nakladak(Simulator.getCas(),this.id);
 			sim.addObserver(nakl);
 			this.vozy.add(nakl);
 			return this.vozy.get(0);
@@ -252,7 +252,7 @@ public class Prekladiste extends Uzel{
 			//pokud neni zadne auto volne, vrat null
 			//return null;
 			//prozatim pokud neni volne auto, vytvori nove a vrati ho
-			nakl = new Nakladak(Simulator.getCas());
+			nakl = new Nakladak(Simulator.getCas(),this.id);
 			sim.addObserver(nakl);
 			this.vozy.addLast(nakl);
 			return this.vozy.getLast();

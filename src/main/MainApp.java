@@ -86,6 +86,7 @@ public class MainApp {
 					
 					//zapsani souseda
 					Simulator.objekty[idZ].sousedi.addLast(idDo);
+					Simulator.objekty[idDo].sousedi.addLast(idZ);
 				}
 			}
 			

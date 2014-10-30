@@ -57,30 +57,50 @@ public class Simulator extends Observable{
 	private static int soucHodina = 0;
 	private static int soucDen = 0;
 	
+	
+	private static Cas soucCas;
+	
 	/**
 	 * Timer ridici simulaci hodin.
 	 */
 	private Timer timerH;
 	
+	/**
+	 * Timer ridici simulaci casu.
+	 */
+	private Timer timerCas;
+	
 	//konstruktor vola zacatek simulace
 	public Simulator(){
 		
-		timerH = new Timer(1000, new ActionListener() {
+		this.soucCas = new Cas();
+		timerCas = new Timer(10, new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				if(soucHodina == 24)
+				if(soucCas.den == 1)
 				{
-					soucDen++;
-					soucHodina = 0;
-					timerH.stop();
+					timerCas.stop();
 				}
 				
-				simulujHodinu(soucHodina);
+				/*
+				 * Zacatek noveho dne. 
+				 */
+				if (soucCas.hodina == 0 && soucCas.minuta == 0)
+				{
+					simulujDen();
+				}
+				
+				
+				if(soucCas.minuta == 0)
+				{
+					simulujHodinu(soucCas.hodina);
+				}
+					
 				noteCas();
 				notePrekresli();
-				soucHodina++;
+				soucCas.incCas();
 			}
 		});
 	}
@@ -101,22 +121,19 @@ public class Simulator extends Observable{
 	//pro potreby GUI - start, restart, pauza..
 	public void startSimulace()
 	{
-		soucDen = 0;
-		soucHodina = 0;
+		this.soucCas = new Cas();
+		timerCas.start();
 		
 		noteCas();
-		simulujDen();
 	}
 	/**
 	 * Metoda provadejici simulaci jednoho dne.
 	 */
 	public void simulujDen(){
 		
-		addLog("Simuluji den: "+soucDen);
+		addLog("Simuluji den: "+soucCas.den);
 		generujObjednavky();
 		//pivovar.testAuta();
-		
-		timerH.start();
 
 		/*
 		 * test pro zjisteni poctu prijatych objednavek u jednoho prekladiste
@@ -145,7 +162,7 @@ public class Simulator extends Observable{
 		 * Projde hospody a zjisti, ktera si objednava tuto hodinu
 		 * Objednavky zaradi do fronty prislusneho prekladiste
 		 */
-		addLog("Simuluji hodinu "+soucHodina);
+		addLog("Simuluji hodinu "+hodina);
 		prijmiObjednavky(hodina);
 		
 		
@@ -446,7 +463,8 @@ public class Simulator extends Observable{
 	private void noteCas()
 	{
 		setChanged();
-		notifyObservers(new int[] {soucDen,soucHodina});
+		//notifyObservers(new int[] {soucDen,soucHodina});
+		notifyObservers(soucCas.clone());
 	}
 	
 	/**
@@ -463,9 +481,9 @@ public class Simulator extends Observable{
 	 * Metoda vraci soucasny cas.
 	 * @return Cas ve formatu {den,hodina}
 	 */
-	public static int[] getCas()
+	public static Cas getCas()
 	{
-		return new int [] {soucDen,soucHodina};
+		return soucCas.clone();
 	}
 	
 	/**
@@ -488,17 +506,17 @@ public class Simulator extends Observable{
 	
 	public void resetSimulace()
 	{
-		timerH.stop();
+		timerCas.stop();
 		startSimulace();
 	}
 	
 	public void pauzaSimulace()
 	{
-		timerH.stop();
+		timerCas.stop();
 	}
 	
 	public void pokracovaniSimulace()
 	{
-		timerH.start();
+		timerCas.start();
 	}
 }
