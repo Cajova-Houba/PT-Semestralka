@@ -28,8 +28,8 @@ public class HospodaTank extends Uzel{
 	{
 		super(id, typ, x, y, sim);
 		
-		nova = new Objednavka(id,0,0);
-		stara = new Objednavka(id,0,0);
+		nova = new Objednavka(id,0,0,sim.getCas().den);
+		stara = new Objednavka(id,0,0,sim.getCas().den);
 
 	}
 	
@@ -40,19 +40,21 @@ public class HospodaTank extends Uzel{
 	 * @param cas - cas, kdy hospoda poda objednavku
 	 * @param pocetHLitru - pocet hektolitru, ktere si hospoda objedna
 	 */
-	public void zadejObjednavku(int cas, int pocetHLitru)
+	public void zadejObjednavku(int cas, int pocetHLitru, int den)
 	{
 		/*
 		 * presunuti nove objednavky do stare
 		 */
-		stara.setCas(nova.cas);
-		stara.setObjem(nova.objem);
+		stara.setCas(nova.getCas());
+		stara.setObjem(nova.getObjem());
+		stara.setDen(nova.getDen());
 		
 		/*
 		 * ulozeni udaju o nove objednavce
 		 */
 		nova.setCas(cas);
 		nova.setObjem(pocetHLitru);
+		nova.setDen(den);
 		
 		/*
 		 * testovaci vypis

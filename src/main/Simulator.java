@@ -81,7 +81,7 @@ public class Simulator extends Observable{
 				// TODO Auto-generated method stub
 				if(soucCas.den == 1)
 				{
-					timerCas.stop();
+					//timerCas.stop();
 				}
 				
 				/*
@@ -113,7 +113,7 @@ public class Simulator extends Observable{
 	public void simuluj(){
 		
 		pivovar.hospodyTank.putAll(hospodyTank);
-		spoctiVzdalenosti();
+		//spoctiVzdalenosti();
 		rozdelHospody();
 		startSimulace();
 	}
@@ -133,6 +133,27 @@ public class Simulator extends Observable{
 		
 		addLog("Simuluji den: "+soucCas.den);
 		generujObjednavky();
+		
+		if(getCas().den != 0){
+			
+			addLog("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+			MainApp.zapisDoSouboru("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+			addLog("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+			MainApp.zapisDoSouboru("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+			addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+			
+			for(Prekladiste p : prekladiste.values()){
+				addLog("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+				MainApp.zapisDoSouboru("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+				addLog("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+				MainApp.zapisDoSouboru("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+				addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+				MainApp.zapisDoSouboru("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			}
+			
+		}
+		
 		//pivovar.testAuta();
 
 		/*
@@ -165,19 +186,20 @@ public class Simulator extends Observable{
 		addLog("Simuluji hodinu "+hodina);
 		prijmiObjednavky(hodina);
 		
+		while((pivovar.objednavky.size() > 20) && ((hodina <= 14) && (hodina >= 8))){
+			pivovar.zpracujObjednavky();
+		}
 		
-		prekladiste.get(4001).zpracujObjednavky();
+		for(Prekladiste p : prekladiste.values()){
 		
-		
-		/*for(Prekladiste p : prekladiste.values()){
-		
-			while((p.objednavky.size() > 50) && ((hodina < 16) && (hodina >= 8))){
+			while((p.objednavky.size() > 20) && ((hodina <= 14) && (hodina >= 8))){
 				
 				p.zpracujObjednavky();
-			
+				
 			}
 			
-		}*/
+		}
+		
 		
 	}
 	
@@ -270,6 +292,7 @@ public class Simulator extends Observable{
 		for(int i = 0; i < test.length; i++){
 			
 			System.out.println("Prekladiste "+ (i+1) + ": " + test[i] + " hospod");
+			MainApp.zapisDoSouboru("Prekladiste "+ (i+1) + ": " + test[i] + " hospod");
 			
 		}
 		
@@ -283,7 +306,10 @@ public class Simulator extends Observable{
 			
 		}
 		System.out.println("Prekladiste soucet: " + soucet);
+		MainApp.zapisDoSouboru("Prekladiste soucet: " + soucet);
+		
 		System.out.println("Pivovar: " + pivovar.hospodyTank.size());
+		MainApp.zapisDoSouboru("Pivovar: " + pivovar.hospodyTank.size());
 		
 	}
 
@@ -381,8 +407,8 @@ public class Simulator extends Observable{
 			
 			rCas = r.nextFloat();
 			rObjem = r.nextFloat();
-			
-			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem));
+
+			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem), getCas().den);
 			
 		}
 		
@@ -395,7 +421,7 @@ public class Simulator extends Observable{
 			rCas = r.nextFloat();
 			rObjem = r.nextFloat();
 			
-			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem));
+			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem), getCas().den);
 			
 		}
 		

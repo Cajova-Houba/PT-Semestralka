@@ -109,15 +109,19 @@ public class Uzel implements Observer{
 		
 		//vykresleni cest k sousedum
 		
-		g2.setColor(Color.black);
+		g2.setColor(Color.black);	
+		
 		int[] sousedPoloha = new int[2];
 		int x2,y2;
+		
 		for(Integer i : this.sousedi)
+			
 		{ 
 			sousedPoloha = Simulator.objekty[i.intValue()].poloha;
 			x2 = (int)(sousedPoloha[0] * Xmeritko);
 			y2 = (int)(sousedPoloha[1] * Ymeritko);
 			g2.drawLine(x1, y1, x2, y2);
+			
 		}
 		
 		g2.setColor(puvodniC);

@@ -1,9 +1,13 @@
 package generator;
 
+import graf.Uzel;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.Random;
+
+import main.Simulator;
 
 /**
  * Trida generuje pozice hospod, prekladist, pivovaru a cesty mezi nimi. 
@@ -310,32 +314,82 @@ public class Generator {
 		//cesta z pivovaru do hospod
 		//pivovar je v oblasti 4
 		//docasny seznam
-		tmpList = (LinkedList<int[]>)hospody[4].clone();
+		tmpList = (LinkedList<int[]>)hospody[4].clone();	
+		
+		float aktualni = 2000;
+		float nejblizsi = 2000;
+		int nejblizsiId = 0;
+		
+		for(int j = 0; j < 50; j++){
+			
+			nejblizsi = 2000;
+			int pocitadlo = 0;
+			index = 0;
+			for(int[] hospodatmp : tmpList){
+				
+				aktualni = spoctiVzdalenost(pivovar[0], pivovar[1], hospodatmp[0], hospodatmp[1]);
+				
+				if(aktualni < nejblizsi){
+					
+					nejblizsi = aktualni;
+					nejblizsiId = hospodatmp[2];
+					index = pocitadlo;
+					
+				}
+				pocitadlo++;
+			}
+			cesty.add(new int[] {pivovar[2],nejblizsiId});
+			tmpList.remove(index);
+		}
+		
+		
+		/*
 		for(int i=0;i<50;i++)
 		{
 			index = r.nextInt(tmpList.size());
 			cesty.add(new int[] {0,tmpList.get(index)[2]});
 			tmpList.remove(index);
-		}
+		}*/
+	
+		aktualni = 2000;
+		nejblizsi = 2000;
+		nejblizsiId = 0;
 		
 		//cesty z prekladist
-		for(int i=0;i<POCET_PREKLADIST;i++)
+		for(int i = 0; i < POCET_PREKLADIST; i++)
 		{
 			if(i<4)
 			{
-				tmpList = (LinkedList<int[]>)hospody[i].clone();				
+				tmpList = (LinkedList<int[]>)hospody[i].clone();
+				
 			}
 			else
 			{
 				tmpList = (LinkedList<int[]>)hospody[i+1].clone();
 			}
-			
-			for(int j=0;j<50;j++)
-			{
-				index = r.nextInt(tmpList.size());
-				cesty.add(new int[] {prekladiste[i][2],tmpList.get(index)[2]});
+		
+			for(int j = 0; j < 50; j++){
+				
+				nejblizsi = 2000;
+				int pocitadlo = 0;
+				index = 0;
+				for(int[] hospodatmp : tmpList){
+					
+					aktualni = spoctiVzdalenost(prekladiste[i][0], prekladiste[i][1], hospodatmp[0], hospodatmp[1]);
+					
+					if(aktualni < nejblizsi){
+						
+						nejblizsi = aktualni;
+						nejblizsiId = hospodatmp[2];
+						index = pocitadlo;
+						
+					}
+					pocitadlo++;
+				}
+				cesty.add(new int[] {prekladiste[i][2],nejblizsiId});
 				tmpList.remove(index);
 			}
+			
 		}
 		
 		//kazda hospoda bude sousedit s 15 nejblizsimi
@@ -391,6 +445,21 @@ public class Generator {
 		
 	}
 	
+	
+	/**
+	 * Spocte vzdalenost mezi dvema body zadanymi  v poradi Ax, Ay, Bx, By 
+	 * 
+	 * @return Vzdalenost mezi dvema body.
+	 */
+	private static float spoctiVzdalenost(int ax, int ay, int bx, int by)
+	{
+		
+		return (float) Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+		
+		
+	}
+	
+	
 	/**
 	 * Zapise vygenerovane pozice objektu do textoveho souboru. 
 	 * Format:
@@ -410,23 +479,33 @@ public class Generator {
 			//zapis pivovar
 			bw.write("pivovar\r\n");
 			bw.write(pivovar[0]+","+pivovar[1]+","+pivovar[2]+"\r\n");
-			int pocetHospodTank = (int)((POCET_HOSPOD / 9) * PROCENT_HOSPOD_TANK);  //pocet hospod s tankem v jedne olasti
+			int pocetHospodTank = (int)((POCET_HOSPOD) * PROCENT_HOSPOD_TANK);  //pocet hospod s tankem v jedne olasti
 			
 			//zapis hospod
-			for(int i=0; i< hospody.length; i++)
+			for(int i = 0; i < hospody.length; i++)
 			{
-				int mez = hospody[i].size() - pocetHospodTank;
-				bw.write("hospoda\r\n");  //obycejne hospody v jedne oblasti
-				for(int j=0; j< mez; j++)
-				{
-					bw.write(hospody[i].get(j)[0]+","+hospody[i].get(j)[1]+","+hospody[i].get(j)[2]+"\r\n");
+				if(i == 4){
+					int mez = hospody[i].size() - pocetHospodTank;
+					bw.write("hospoda\r\n");  //obycejne hospody v jedne oblasti
+					for(int j=0; j < mez; j++)
+					{
+						bw.write(hospody[i].get(j)[0]+","+hospody[i].get(j)[1]+","+hospody[i].get(j)[2]+"\r\n");
+					}
+					
+					bw.write("hospodat\r\n");  //hospody s tanekm
+					for(int j=mez; j< hospody[i].size(); j++)
+					{
+						bw.write(hospody[i].get(j)[0]+","+hospody[i].get(j)[1]+","+hospody[i].get(j)[2]+"\r\n");
+					}
+				}
+				else{
+					bw.write("hospoda\r\n");  //obycejne hospody v jedne oblasti
+					for(int j=0; j< hospody[i].size(); j++)
+					{
+						bw.write(hospody[i].get(j)[0]+","+hospody[i].get(j)[1]+","+hospody[i].get(j)[2]+"\r\n");
+					}
 				}
 				
-				bw.write("hospodat\r\n");  //hospody s tanekm
-				for(int j=mez; j< hospody[i].size(); j++)
-				{
-					bw.write(hospody[i].get(j)[0]+","+hospody[i].get(j)[1]+","+hospody[i].get(j)[2]+"\r\n");
-				}
 			}
 			
 			//zapis prekladist

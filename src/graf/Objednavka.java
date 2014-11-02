@@ -15,17 +15,23 @@ public class Objednavka implements Comparable<Objednavka>{
 	int cas = 0;
 	
 	/**
+	 * udaj o dni podanii objednavky (0-6)
+	 */
+	int den = 0;
+	
+	/**
 	 * id hospody, ktere patri tato objednavka
 	 */
 	int id = 0;
 	
 	
 	
-	public Objednavka(int id, int cas, int objem){
+	public Objednavka(int id, int cas, int objem, int den){
 		
 		this.id = id;
 		this.objem = objem;
 		this.cas = cas;
+		this.den = den;
 		
 	}
 
@@ -52,15 +58,24 @@ public class Objednavka implements Comparable<Objednavka>{
 
 	@Override
 	public String toString() {
-		return "Objednavka: [cas=" + cas + ", objem= " + objem +  ", id=" + id
+		return "Objednavka: [den=" + den + ", cas=" + cas + ", objem=" + objem +  ", id=" + id
 				+ "]";
 	}
 
 
 	@Override
 	public int compareTo(Objednavka arg0) {
+		
 		/*
-		 * nejprve se radi podle casu
+		 * nejprve se radi podle dne
+		 */
+		if(arg0.den != this.den){
+			return  this.den  - arg0.den;
+		}
+		
+		
+		/*
+		 * pak se radi podle casu
 		 */
 		if(arg0.cas != this.cas){
 			return  this.cas - arg0.cas;
@@ -77,6 +92,16 @@ public class Objednavka implements Comparable<Objednavka>{
 		 * jinak maji stejnou prioritu
 		 */
 		return 0;
+	}
+
+
+	public int getDen() {
+		return den;
+	}
+	
+
+	public void setDen(int den) {
+		this.den = den;
 	}
 
 

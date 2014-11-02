@@ -1,7 +1,11 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 import generator.Generator;
 import graf.HospodaSud;
@@ -16,6 +20,7 @@ public class MainApp {
 
 	//trida ridici simulaci
 	private static Simulator sim = new Simulator();
+	
 	
 	private static void nactiZeSouboru(String jmeno)
 	{
@@ -74,10 +79,12 @@ public class MainApp {
 				else if (s.equalsIgnoreCase("prekladiste")) {typ = UzelTyp.PREKLADISTE;}
 			}
 			
+			boolean zapsat = true;
 			//nacitani cest
 			while((s = br.readLine()) != null)
 			{
 				tmp = s.split(",");
+				zapsat = true;
 				
 				if(tmp.length == 2)
 				{
@@ -85,8 +92,10 @@ public class MainApp {
 					int idDo = Integer.parseInt(tmp[1]);
 					
 					//zapsani souseda
+					
 					Simulator.objekty[idZ].sousedi.addLast(idDo);
 					Simulator.objekty[idDo].sousedi.addLast(idZ);
+			
 				}
 			}
 			
@@ -99,17 +108,63 @@ public class MainApp {
 		
 	}
 	
+	
+	public static void zapisDoSouboru(String retezec)
+	{
+		try
+		{
+			File file = new File("vystup.txt");
+			FileWriter fw = new FileWriter(file,true);
+			BufferedWriter bw = new BufferedWriter(fw);
+					
+			fw.append(retezec);
+			fw.append("\r\n");
+			bw.close();
+			
+		}
+		catch(Exception e)
+		{
+			System.err.println("Chyba pri zapisovani do souboru vystup.txt");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	private static void smazSouborVypis()
+	{
+		try
+		{
+			File file = new File("vystup.txt");
+			FileWriter fw = new FileWriter(file);
+			BufferedWriter bw = new BufferedWriter(fw);
+					
+			bw.write("");
+			bw.close();
+			
+		}
+		catch(Exception e)
+		{
+			System.err.println("Chyba pri zapisovani do souboru vystup.txt");
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub		
 		//vygenerovani
 		System.out.print("Generuji mapu.. ");
-		//Generator.generuj();
+		Generator.generuj();
 		System.out.print("Hotovo\n");
 		
 		//nacteni ze souboru
 		System.out.print("Nacitam vygenerovanou mapu.. ");
 		nactiZeSouboru("gen.txt");
 		System.out.print("Hotovo\n");
+		
+		//vymazani souboru pro vypis
+		smazSouborVypis();
 		
 		//zobrazeni
 		Okno okno = new Okno(sim);

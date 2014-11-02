@@ -102,6 +102,6 @@ public class Cas {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return den+":"+hodina+":"+minuta;
+		return "den "+den+". "+hodina+":"+minuta;
 	}
 }
