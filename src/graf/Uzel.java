@@ -127,7 +127,6 @@ public class Uzel implements Observer{
 		g2.setColor(puvodniC);
 	}
 	
-	
 	/**
 	 * Spocte vzdalenost mezi soucasnym uzlem a dodanym uzlem.
 	 * 

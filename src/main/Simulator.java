@@ -13,6 +13,7 @@ import graf.HospodaSud;
 import graf.HospodaTank;
 import graf.Pivovar;
 import graf.Prekladiste;
+import graf.Skladiste;
 import graf.Uzel;
 
 
@@ -81,7 +82,8 @@ public class Simulator extends Observable{
 				// TODO Auto-generated method stub
 				if(soucCas.den == 1)
 				{
-					//timerCas.stop();
+					timerCas.stop();
+					return;
 				}
 				
 				/*
@@ -92,12 +94,22 @@ public class Simulator extends Observable{
 					simulujDen();
 				}
 				
-				
+				/*
+				 * Zacatek nove hodiny.
+				 */
 				if(soucCas.minuta == 0)
 				{
 					simulujHodinu(soucCas.hodina);
 				}
 					
+				/*
+				 * Konec dne.
+				 */
+				if(soucCas.hodina == 23 && soucCas.minuta == 59)
+				{
+					statistikaDne();
+				}
+				
 				noteCas();
 				notePrekresli();
 				soucCas.incCas();
@@ -126,6 +138,9 @@ public class Simulator extends Observable{
 		
 		noteCas();
 	}
+	
+	
+	
 	/**
 	 * Metoda provadejici simulaci jednoho dne.
 	 */
@@ -134,6 +149,9 @@ public class Simulator extends Observable{
 		addLog("Simuluji den: "+soucCas.den);
 		generujObjednavky();
 		
+		/*
+		 * Presunuto do metody statistikaDne()
+		 * 
 		if(getCas().den != 0){
 			
 			addLog("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
@@ -152,7 +170,7 @@ public class Simulator extends Observable{
 				MainApp.zapisDoSouboru("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
 			}
 			
-		}
+		}*/
 		
 		//pivovar.testAuta();
 
@@ -203,6 +221,34 @@ public class Simulator extends Observable{
 		
 	}
 	
+	/**
+	 * Metoda zjisti statistiku dne:
+	 * 		- Pocet vozu kazdeho prekladiste
+	 * 		- Pocet prijatych objednavek
+	 * 		- Pocet zpracovanych objednavek
+	 */
+	private void statistikaDne()
+	{
+		MainApp.zapisDoSouboru("==================");
+		MainApp.zapisDoSouboru("= STATISTIKA DNE =");
+		MainApp.zapisDoSouboru("==================");
+		addLog("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+		MainApp.zapisDoSouboru("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+		addLog("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+		MainApp.zapisDoSouboru("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+		addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		MainApp.zapisDoSouboru("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		
+		for(Prekladiste p : prekladiste.values()){
+			addLog("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+			MainApp.zapisDoSouboru("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+			addLog("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+			MainApp.zapisDoSouboru("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+			addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+		}
+		MainApp.zapisDoSouboru("");
+	}
 	
 	/**
 	 * Metoda rozdelujici hospodySud do kompetence nejblizsiho prepraviste

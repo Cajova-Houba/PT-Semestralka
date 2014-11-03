@@ -18,11 +18,15 @@ public class Skladiste extends Uzel{
 	 */
 	public PriorityQueue<Objednavka> objednavky = new PriorityQueue<Objednavka>(); 
 	
+	/**
+	 * Pocet prijatych objednavek.
+	 */
+	protected int prijateObjednavky;
 	
 	public Skladiste(int id, UzelTyp typ, int x, int y, Simulator sim)
 	{
 		super(id, typ, x, y, sim);
-		
+		this.prijateObjednavky = 0;
 	}
 	
 	
@@ -71,7 +75,7 @@ public class Skladiste extends Uzel{
 	{
 		
 		objednavky.add(new Objednavka(obj.id, obj.cas, obj.objem, obj.den));
-		
+		this.prijateObjednavky++;
 	}
 	
 	
@@ -92,5 +96,28 @@ public class Skladiste extends Uzel{
 		}
 	}
 	
+	/**
+	 * Metoda vrati pocet zpracovanych objednavek.
+	 * @return Pocet zpracovanych objednavek.
+	 */
+	public int getPocZpracObj()
+	{
+		int obj = 0;
+		
+		for(Auto a : this.vozy)
+		{
+			obj += a.getPocZpracObj();
+		}
+		
+		return obj;
+	}
 	
+	/**
+	 * Metoda vrati pocet prijatych objednavek.
+	 * @return	Pocet prijatych objednavek.
+	 */
+	public int getPocPrijObj()
+	{
+		return this.prijateObjednavky;
+	}
 }

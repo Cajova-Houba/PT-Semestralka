@@ -57,11 +57,17 @@ public class Auto implements Observer{
 	//ID domovskeho uzlu vozu
 	protected final int DOMOV;
 	
+	/**
+	 * Pocet zpracovanych objednavek.
+	 */
+	protected int zpracovaneObjednavky;
+	
 	public Auto(int domov)
 	{
 		this.id = Auto.DEF_ID;
 		Auto.DEF_ID++;
 		this.DOMOV = domov;
+		this.zpracovaneObjednavky = 0;
 	}
 	
 	/**
@@ -198,6 +204,7 @@ public class Auto implements Observer{
     	if(vyrad != null)
     	{
     		this.objednavky.remove(vyrad);
+    		zpracovaneObjednavky++;
     	}
     	
     	return potrebnyCas;
@@ -241,5 +248,14 @@ public class Auto implements Observer{
 		{
 			return false;
 		}
+	}
+	
+	/**
+	 * Metoda vrati pocet zpracovanych (=dorucenych) objednavek.
+	 * @return Pocet dorucenych objednavek.
+	 */
+	public int getPocZpracObj()
+	{
+		return this.zpracovaneObjednavky;
 	}
 }

@@ -1,11 +1,8 @@
 package graf;
 
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 import main.Simulator;
