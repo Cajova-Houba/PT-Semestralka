@@ -1,5 +1,7 @@
 package graf;
 
+import main.Cas;
+
 
 public class Objednavka implements Comparable<Objednavka>{
 
@@ -24,7 +26,7 @@ public class Objednavka implements Comparable<Objednavka>{
 	 */
 	int id = 0;
 	
-	
+	Cas soucCas;
 	
 	public Objednavka(int id, int cas, int objem, int den){
 		
@@ -32,7 +34,7 @@ public class Objednavka implements Comparable<Objednavka>{
 		this.objem = objem;
 		this.cas = cas;
 		this.den = den;
-		
+		this.soucCas = new Cas();
 	}
 
 
@@ -58,7 +60,7 @@ public class Objednavka implements Comparable<Objednavka>{
 
 	@Override
 	public String toString() {
-		return "Objednavka: [den=" + den + ", cas=" + cas + ", objem=" + objem +  ", id=" + id
+		return "Objednavka: [den=" + den + ", cas=" + soucCas.toString() + ", objem=" + objem +  ", id=" + id
 				+ "]";
 	}
 

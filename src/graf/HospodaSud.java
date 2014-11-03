@@ -62,13 +62,13 @@ public class HospodaSud extends Uzel{
 		stara.setObjem(nova.getObjem());
 		stara.setDen(nova.getDen());
 		
-		
 		/*
 		 * ulozeni udaju o nove objednavce
 		 */
 		nova.setCas(cas);
 		nova.setObjem(pocetSudu);
 		nova.setDen(den);
+		nova.soucCas = this.soucCas.clone();
 		
 		/*
 		 * testovaci vypis

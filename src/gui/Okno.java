@@ -3,7 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.Observer;
@@ -47,7 +46,7 @@ public class Okno extends JFrame implements Observer{
 	private JLabel denLab;
 	private JLabel casLab;
 	private final String denLabS = "Den: ";
-	private final String casLabS = "Cas:  ";
+	private final String casLabS = "Čas:  ";
 	
 	//textarea pro vypisovani logu
 	private JTextArea logArea;
@@ -73,7 +72,6 @@ public class Okno extends JFrame implements Observer{
 		this.add(inicOvlPanel(), BorderLayout.SOUTH);
 		
 		this.setVisible(true);
-		
 	}
 	
 	/**

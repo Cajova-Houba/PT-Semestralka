@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import main.MainApp;
 import main.Simulator;
 
 public class Skladiste extends Uzel{
@@ -73,9 +74,11 @@ public class Skladiste extends Uzel{
 	 */
 	public void prijmiObjednavku(Objednavka obj)
 	{
-		
 		objednavky.add(new Objednavka(obj.id, obj.cas, obj.objem, obj.den));
 		this.prijateObjednavky++;
+		this.sklad -= obj.objem;
+		MainApp.zapisDoSouboru("Prekladiste "+this.id+" prijalo objednavku "+obj.toString());
+		
 	}
 	
 	

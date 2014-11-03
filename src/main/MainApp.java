@@ -155,7 +155,7 @@ public class MainApp {
 		// TODO Auto-generated method stub		
 		//vygenerovani
 		System.out.print("Generuji mapu.. ");
-		Generator.generuj();
+		//Generator.generuj();
 		System.out.print("Hotovo\n");
 		
 		//nacteni ze souboru
@@ -172,6 +172,9 @@ public class MainApp {
 		
 		//start simulace
 		sim.simuluj();
+		
+		//konec simulace
+		System.out.println("Konec simulace");
 	}
 
 }

@@ -46,7 +46,7 @@ public class Uzel implements Observer{
 	/**
 	 * Soucasny cas. Aktualizovano z tridy Simulator pres navrhovy vzor Vydavatel-Predplatitel.
 	 */
-	private Cas soucCas;
+	protected Cas soucCas;
 	
 	/**
 	 * Odkaz na tridu simulator kvuli prihlasovani novych aut. (navrhovy vzor vydavatel-predplatitel)
@@ -105,12 +105,17 @@ public class Uzel implements Observer{
 		
 		// tady
 		g2.fillRect(x1, y1, (int)w, (int)h);
-		
-		
-		//vykresleni cest k sousedum
-		
+		g2.setColor(puvodniC);
+	}
+	
+	public void vykresliCesty(Graphics2D g2, float Xmeritko, float Ymeritko)
+	{
+		Color puvodniC = g2.getColor();
 		g2.setColor(Color.black);	
 		
+		float w = 3*Xmeritko;
+		int x1 = (int)(this.poloha[0] * Xmeritko - (int)(w/2));
+		int y1 = (int)(this.poloha[1] * Ymeritko - (int)(w/2));
 		int[] sousedPoloha = new int[2];
 		int x2,y2;
 		

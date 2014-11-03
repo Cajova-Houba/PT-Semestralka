@@ -55,7 +55,7 @@ public class HospodaTank extends Uzel{
 		nova.setCas(cas);
 		nova.setObjem(pocetHLitru);
 		nova.setDen(den);
-		
+		nova.soucCas = this.soucCas.clone();
 		/*
 		 * testovaci vypis
 		 */

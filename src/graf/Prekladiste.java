@@ -13,7 +13,7 @@ public class Prekladiste extends Skladiste{
 	/**
 	 * pocet sudu k dispozici k vydeji
 	 */
-	int pocetSudu;
+	public int pocetSudu;
 	
 	/**
 	 * pocatecni a zaroven maximalni pocet sudu na prekladisti
@@ -39,7 +39,7 @@ public class Prekladiste extends Skladiste{
 	{
 		super(id, typ, x, y, sim);
 		
-		pocetSudu = PRIPRAVENE_SUDY;
+		sklad = PRIPRAVENE_SUDY;
 		this.vozy = new LinkedList<Auto>();
 	}
 	

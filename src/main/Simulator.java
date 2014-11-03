@@ -223,6 +223,7 @@ public class Simulator extends Observable{
 	
 	/**
 	 * Metoda zjisti statistiku dne:
+	 * 		- Pocet zbylych sudu u prekladist
 	 * 		- Pocet vozu kazdeho prekladiste
 	 * 		- Pocet prijatych objednavek
 	 * 		- Pocet zpracovanych objednavek
@@ -232,20 +233,25 @@ public class Simulator extends Observable{
 		MainApp.zapisDoSouboru("==================");
 		MainApp.zapisDoSouboru("= STATISTIKA DNE =");
 		MainApp.zapisDoSouboru("==================");
+		MainApp.zapisDoSouboru("Pivovar: ");
 		addLog("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
-		MainApp.zapisDoSouboru("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+		MainApp.zapisDoSouboru(pivovar.vozy.size() +" vozu");
 		addLog("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
-		MainApp.zapisDoSouboru("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+		MainApp.zapisDoSouboru("zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
 		addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
-		MainApp.zapisDoSouboru("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		MainApp.zapisDoSouboru("");
 		
 		for(Prekladiste p : prekladiste.values()){
+			MainApp.zapisDoSouboru("Prekladiste "+p.id);
+			MainApp.zapisDoSouboru("Sudy: "+p.sklad);
 			addLog("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
-			MainApp.zapisDoSouboru("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+			MainApp.zapisDoSouboru(p.vozy.size() +" vozu");
 			addLog("               zbylo v nem "+ p.objednavky.size() +" objednavek");
-			MainApp.zapisDoSouboru("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+			MainApp.zapisDoSouboru("zbylo v nem "+ p.objednavky.size() +" objednavek");
 			addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
-			MainApp.zapisDoSouboru("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("");
 		}
 		MainApp.zapisDoSouboru("");
 	}
