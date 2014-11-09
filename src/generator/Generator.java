@@ -1,13 +1,11 @@
 package generator;
 
-import graf.Uzel;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.Random;
 
-import main.Simulator;
 
 /**
  * Trida generuje pozice hospod, prekladist, pivovaru a cesty mezi nimi. 

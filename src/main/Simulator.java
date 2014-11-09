@@ -13,7 +13,6 @@ import graf.HospodaSud;
 import graf.HospodaTank;
 import graf.Pivovar;
 import graf.Prekladiste;
-import graf.Skladiste;
 import graf.Uzel;
 
 
@@ -55,16 +54,9 @@ public class Simulator extends Observable{
 	public final int ZACATEK_DNE = 8;
 	public final int KONEC_DNE = 16;
 	
-	private static int soucHodina = 0;
-	private static int soucDen = 0;
-	
 	
 	private static Cas soucCas;
 	
-	/**
-	 * Timer ridici simulaci hodin.
-	 */
-	private Timer timerH;
 	
 	/**
 	 * Timer ridici simulaci casu.
@@ -74,7 +66,7 @@ public class Simulator extends Observable{
 	//konstruktor vola zacatek simulace
 	public Simulator(){
 		
-		this.soucCas = new Cas();
+		soucCas = new Cas();
 		timerCas = new Timer(10, new ActionListener() {
 			
 			@Override
@@ -133,7 +125,7 @@ public class Simulator extends Observable{
 	//pro potreby GUI - start, restart, pauza..
 	public void startSimulace()
 	{
-		this.soucCas = new Cas();
+		soucCas = new Cas();
 		timerCas.start();
 		
 		noteCas();
@@ -510,9 +502,13 @@ public class Simulator extends Observable{
 		 * Nejvice objednavek chodi kolem 10
 		 * Posledni objednavka muze prijit max 16:00
 		 * Prvni objednavka muze prijit nejdrive v 8:00
-		 *  
+		 * Funkce pro normalni rozlozeni:
+		 * 	f(x) = 1/(o*sqrt(2*PI)) * exp(-(x-mid)*(x-mid) / (2*o*o))
+		 * kde mid=10 a o=2.5
+		 * 
+		 * tato funkce lze v jave nahradit: r.nextGaussian()*2.5 + 10
 		 */
-		if(rCas < 0.05){ return 8; }
+		/*if(rCas < 0.05){ return 8; }
 		else if(rCas < 0.15){ return 9; }
 		else if(rCas < 0.50){ return 10; }
 		else if(rCas < 0.65){ return 11; }
@@ -520,7 +516,17 @@ public class Simulator extends Observable{
 		else if(rCas < 0.85){ return 13; }
 		else if(rCas < 0.90){ return 14; }
 		else if(rCas < 0.95){ return 15; }
-		else{ return 16; }
+		else{ return 16; }*/
+		
+		/*
+		 * funkce vraci hodnoty v prilis velkem rozmezi, proto je omezime jen na hodnoty od 8 do 16 
+		 * vsechny hodnoty, ktere budou mimo tento interval budou vraceny jako hodnota 10
+		 */
+		double o = 2.5, mid=10;
+		Random r = new Random();
+		int cislo = (int)Math.round(r.nextGaussian()*o+mid);
+		cislo = (cislo >=8) && (cislo<=16) ? cislo : 10;
+		return cislo;
 		
 	}
 	
