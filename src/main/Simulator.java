@@ -448,11 +448,9 @@ public class Simulator extends Observable{
 		 * Projde po jedne vsechny hospodySud a nahodne jim zvoli objednavku
 		 */
 		for(HospodaSud hospoda : hospodySud.values()){
-			
-			rCas = r.nextFloat();
 			rObjem = r.nextFloat();
 
-			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem), getCas().den);
+			hospoda.zadejObjednavku(zvolCasObjednavky(), zvolObjemObjednavky(rObjem), getCas().den);
 			
 		}
 		
@@ -462,10 +460,9 @@ public class Simulator extends Observable{
 		 */
 		for(HospodaTank hospoda : hospodyTank.values()){
 			
-			rCas = r.nextFloat();
 			rObjem = r.nextFloat();
 			
-			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem), getCas().den);
+			hospoda.zadejObjednavku(zvolCasObjednavky(), zvolObjemObjednavky(rObjem), getCas().den);
 			
 		}
 		
@@ -495,7 +492,7 @@ public class Simulator extends Observable{
 	 * @param rCas - nahodne cislo v rozsahu (0,1) pro urceni casu objednavky
 	 * @return nahodne urceny cas objednavky
 	 */
-	public int zvolCasObjednavky(float rCas){
+	public int zvolCasObjednavky(){
 		
 		/*
 		 * Cas objednavky je urcen gaussovym rozdelenim
@@ -525,8 +522,8 @@ public class Simulator extends Observable{
 		double o = 2.5, mid=10;
 		Random r = new Random();
 		int cislo = (int)Math.round(r.nextGaussian()*o+mid);
-		cislo = (cislo >=8) && (cislo<=16) ? cislo : 10;
-		return cislo;
+		cislo = (cislo >=8) && (cislo<=16) ? cislo : (int)mid;
+		return cislo;      
 		
 	}
 	
