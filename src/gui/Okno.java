@@ -3,7 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.Observer;
@@ -18,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import main.Cas;
 import main.Simulator;
 
 public class Okno extends JFrame implements Observer{
@@ -44,9 +44,9 @@ public class Okno extends JFrame implements Observer{
 	
 	//labely pro zobrazeni hodiny a casu
 	private JLabel denLab;
-	private JLabel hodLab;
+	private JLabel casLab;
 	private final String denLabS = "Den: ";
-	private final String hodLabS = "Hodina: ";
+	private final String casLabS = "Čas:  ";
 	
 	//textarea pro vypisovani logu
 	private JTextArea logArea;
@@ -72,7 +72,6 @@ public class Okno extends JFrame implements Observer{
 		this.add(inicOvlPanel(), BorderLayout.SOUTH);
 		
 		this.setVisible(true);
-		
 	}
 	
 	/**
@@ -103,10 +102,10 @@ public class Okno extends JFrame implements Observer{
 		JScrollPane sp = new JScrollPane(pan);
 		
 		denLab = new JLabel(denLabS);
-		hodLab = new JLabel(hodLabS);
+		casLab = new JLabel(casLabS);
 		pan.add(denLab);
 		pan.add(Box.createRigidArea(new Dimension(30, 25)));
-		pan.add(hodLab);
+		pan.add(casLab);
 		
 		//return sp;
 		return pan;
@@ -162,12 +161,12 @@ public class Okno extends JFrame implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		//0=den 1=hodina
-		if (arg1 instanceof int[])
+		if (arg1 instanceof Cas)
 		{
-			int[] resp = (int[]) arg1;
+			Cas resp = (Cas) arg1;
 			
-			denLab.setText(denLabS+resp[0]);
-			hodLab.setText(hodLabS+resp[1]);	
+			denLab.setText(denLabS+resp.den);
+			casLab.setText(casLabS+resp.hodina+":"+resp.minuta);	
 		}
 		//log
 		else if(arg1 instanceof String)
@@ -218,7 +217,7 @@ public class Okno extends JFrame implements Observer{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			sim.startSimulace();
+			sim.pokracovaniSimulace();
 		}
 	}
 	

@@ -54,11 +54,17 @@ public class Zobrazovac extends JPanel{
 		g2.setColor(Color.white);
 		g2.fillRect(0, 0, SIRKA, VYSKA);
 		
+		//vykresleni cest
+		for(int i=0; i<Simulator.objekty.length; i++)
+		{
+			Simulator.objekty[i].vykresliCesty(g2,Xmeritko,Ymeritko);
+		}
+		
+		//vykresleni uzlu
 		for(int i=0; i<Simulator.objekty.length; i++)
 		{
 			Simulator.objekty[i].vykresliSe(g2,Xmeritko,Ymeritko);
 		}
-		
 		//this.mapaVykreslena = true;
 	}
 	
@@ -81,6 +87,7 @@ public class Zobrazovac extends JPanel{
 		vykresliMapu(g);
 		vykresliVozy(g);
 	}
+	
 	
 	
 }

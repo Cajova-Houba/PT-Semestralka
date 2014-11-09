@@ -1,22 +1,19 @@
 package graf;
 
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 import main.Simulator;
 
 
-public class Prekladiste extends Uzel{
+public class Prekladiste extends Skladiste{
 
 	/**
 	 * pocet sudu k dispozici k vydeji
 	 */
-	int pocetSudu;
+	public int pocetSudu;
 	
 	/**
 	 * pocatecni a zaroven maximalni pocet sudu na prekladisti
@@ -28,15 +25,7 @@ public class Prekladiste extends Uzel{
 	 */
 	public Map<Integer, HospodaSud> hospodySud = new TreeMap<Integer, HospodaSud>();
 	
-	/**
-	 * fronta prijatych objednavek
-	 */
-	public PriorityQueue<Objednavka> objednavky = new PriorityQueue<Objednavka>(); 
 	
-	/**
-	 * Seznam aut prirazenych prekladisti.
-	 */
-	public LinkedList<Auto> vozy; 
 	
 	/**
 	 * Vytvori prekladiste danych parametru. Nastavi pocet sudu na defaultni hodnotu.
@@ -50,7 +39,7 @@ public class Prekladiste extends Uzel{
 	{
 		super(id, typ, x, y, sim);
 		
-		pocetSudu = PRIPRAVENE_SUDY;
+		sklad = PRIPRAVENE_SUDY;
 		this.vozy = new LinkedList<Auto>();
 	}
 	
@@ -77,7 +66,7 @@ public class Prekladiste extends Uzel{
 	public void zpracujObjednavky()
 	{
 		int idtmp = 0;
-		//int delkaCesty = 0;
+		float delkaCesty = 0;
 		
 		if (this.objednavky.isEmpty())
 		{
@@ -92,8 +81,10 @@ public class Prekladiste extends Uzel{
 		/*System.out.println();
 		System.out.println("Objednavka hospody:" + ob.id + " se zpracuje pres trasu: ");
 		*/
-		vyberCestu(this.id, ob.id, nakl);
-		
+		delkaCesty += vyberCestu(this.id, ob.id, nakl);
+		//if(){
+			
+		//}
 		
 		while(nakl.pridejObjednavku(ob))
 		{
@@ -106,84 +97,68 @@ public class Prekladiste extends Uzel{
 			ob = vyberObjednavku(ob.id);	
 			objednavky.remove(ob);
 
-			vyberCestu(idtmp, ob.id, nakl);
+			delkaCesty += vyberCestu(idtmp, ob.id, nakl);
 			
-			if(nakl.objem > 24){
+			if((nakl.objem > 24)||(13-Simulator.getCas().hodina)*(nakl.RYCHLOST) + 100 < delkaCesty){
 				//System.out.println("Nakladak ma "+nakl.objem);
 				nakl.kDispozici = false;
+				//System.out.println("Auto jede " + delkaCesty + "km");
+				break;		
+			}
+			/*
+			if((Simulator.getCas().hodina > 12) && (delkaCesty > 80) ){
+				//System.out.println("Nakladak ma "+nakl.objem);
+				nakl.kDispozici = false;
+				//System.out.println("Auto jede " + delkaCesty + "km");
 				break;		
 			}
 			
+			if((Simulator.getCas().hodina > 9) && (delkaCesty > 130) ){
+				//System.out.println("Nakladak ma "+nakl.objem);
+				nakl.kDispozici = false;
+				//System.out.println("Auto jede " + delkaCesty + "km");
+				break;		
+			}*/
+			
 		}
+		
 		
 		//cesta zpatky
-		//vyberCestu(ob.id, this.id, nakl);
-		//nakl.kDispozici = false;
-		//nakl.jede = true;
+		vyberCestu(ob.id, this.id, nakl);
+		nakl.kDispozici = false;
+		nakl.jede = true;
 
 	}
 
 	
-	
 	/**
-	 * Metoda vybere objednavku ktera je nejblize zadanemu uzlu.
+	 * Vybere vhodnou cestu mezi dvema uzly a preda uzly, pres ktere tato cesta vede autu
 	 * 
-	 * @param ID uzlu   
+	 * @param idStart - id startovniho uzlu
+	 * @param idCil - id ciloveho uzlu
+	 * @param cist - pouzivana cisterna pro tuto cestu
 	 */
-	public Objednavka vyberObjednavku(int iduzlu)
-	{
-		//System.out.println("Vybiram objednavku");
-		Uzel uzel = Simulator.objekty[iduzlu];
-		float aktualni = 2000;
-		float nejblizsi = 2000;
-		Objednavka objednavka = null;
-		
-		for(Objednavka ob : objednavky){
-				
-			aktualni = uzel.spoctiVzdalenost(Simulator.objekty[ob.id]);
-			//System.out.println(aktualni);
-			
-			if(aktualni < nejblizsi){
-					
-				nejblizsi = aktualni;
-				objednavka = ob;
-				
-			}
-			
-			
-		}
-		//System.out.println("nejblizsi objednavka: " + nejblizsi);
-		/*System.out.println();
-		System.out.print("+objednavka: " + objednavka.id + " pres:");*/
-		return objednavka;
-		
-	}
-
-	
-	
-	/**
-	 * 
-	 * 
-	 * @param 
-	 */
-	public void vyberCestu(int idStart ,int idCil, Nakladak nakl)
+	public float vyberCestu(int idStart ,int idCil, Auto auto)
 	{
 		//System.out.println("Vybiram cestu");
-		int delkaCesty = 0;
 		int id = 0;
 		float nejblizsi = 2000;
 		float aktualni = 2000;
+		float delkaCesty = 0;
 	
 		Uzel uzel = Simulator.objekty[idStart];
 		Uzel cil = Simulator.objekty[idCil];
-		
-		while(uzel != cil){
+	
+		while(!((Simulator.objekty[uzel.id].poloha[0] == Simulator.objekty[cil.id].poloha[0])&&
+				(Simulator.objekty[uzel.id].poloha[1] == Simulator.objekty[cil.id].poloha[1]))){
 			
 			//nastaveni hodnoty nejblizsi na vyrazne vyssi, nez je ocekavana
 			nejblizsi = 2000;
 			
 			for(Integer idtmp : uzel.sousedi){
-				
+				if(idtmp == 0){
+					continue;
+				}
 				aktualni = cil.spoctiVzdalenost(Simulator.objekty[idtmp]);
 				//System.out.println(aktualni);
 				
@@ -197,27 +172,17 @@ public class Prekladiste extends Uzel{
 			}
 			
 			//System.out.println("vybrano: "+nejblizsi);
-			delkaCesty += nejblizsi;
+			delkaCesty += uzel.spoctiVzdalenost(Simulator.objekty[id]);
+			
 			uzel = Simulator.objekty[id];
 			
-			nakl.pridejUzel(uzel);
+			auto.pridejUzel(uzel);
 			//System.out.print(uzel.id+", ");
 				
 		}
 		//System.out.println("Heureka");
-		//return delkaCesty;
-	}
-	
-	
-	/**
-	 * Prida objednavku do fronty
-	 * 
-	 * @param HospodaSud hospoda, pro kterou je nejblizsi prave tohle prekladiste
-	 */
-	public void prijmiObjednavku(Objednavka objednavka)
-	{
+		return delkaCesty;
 		
-		objednavky.add(objednavka);	
 	}
 	
 	
@@ -227,13 +192,13 @@ public class Prekladiste extends Uzel{
 	 * 
 	 * @return Prvni auto ktere je k dispozici.
 	 */
-	private Auto getVolneAuto()
+	public Auto getVolneAuto()
 	{
 		Nakladak nakl;
 		//seznam aut je prazdny, vytvori se nove auto
 		if(this.vozy.isEmpty())
 		{
-			nakl = new Nakladak(Simulator.getCas());
+			nakl = new Nakladak(Simulator.getCas(),this.id);
 			sim.addObserver(nakl);
 			this.vozy.add(nakl);
 			return this.vozy.get(0);
@@ -252,28 +217,11 @@ public class Prekladiste extends Uzel{
 			//pokud neni zadne auto volne, vrat null
 			//return null;
 			//prozatim pokud neni volne auto, vytvori nove a vrati ho
-			nakl = new Nakladak(Simulator.getCas());
+			nakl = new Nakladak(Simulator.getCas(),this.id);
 			sim.addObserver(nakl);
 			this.vozy.addLast(nakl);
 			return this.vozy.getLast();
 		}
 	}
-	
-	
-	
-	/**
-	 * Metoda vykresli vozy prislusici danemu prekladisty. Vykresluji se pouze vozy ktere jedou a neparkuji v 
-	 * v prekladisti.
-	 * 
-	 * @param g2 Dodany graficky kontext.
-	 * @param Xmeritko	Meritko X-osy.
-	 * @param Ymeritko  Meritko Y-osy.
-	 */
-	public void vykresliVozy(Graphics2D g2, float Xmeritko, float Ymeritko)
-	{
-		for(Auto a : this.vozy)
-		{
-			a.vykresliSe(g2, Xmeritko, Ymeritko);
-		}
-	}
+
 }

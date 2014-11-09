@@ -40,8 +40,8 @@ public class HospodaSud extends Uzel{
 	{
 		super(id, typ, x, y, sim);
 		
-		nova = new Objednavka(id,0,0);
-		stara = new Objednavka(id,0,0);
+		nova = new Objednavka(id,0,0,0);
+		stara = new Objednavka(id,0,0,0);
 		
 		prazdneSudy = 0;
 	}
@@ -53,25 +53,27 @@ public class HospodaSud extends Uzel{
 	 * @param cas - cas, kdy hospoda poda objednavku
 	 * @param pocetSudu - pocet sudu, ktere si hospoda objedna
 	 */
-	public void zadejObjednavku(int cas, int pocetSudu)
+	public void zadejObjednavku(int cas, int pocetSudu, int den)
 	{
 		/*
 		 * presunuti nove objednavky do stare
 		 */
-		stara.setCas(nova.cas);
-		stara.setObjem(nova.objem);
-		
+		stara.setCas(nova.getCas());
+		stara.setObjem(nova.getObjem());
+		stara.setDen(nova.getDen());
 		
 		/*
 		 * ulozeni udaju o nove objednavce
 		 */
 		nova.setCas(cas);
 		nova.setObjem(pocetSudu);
+		nova.setDen(den);
+		nova.soucCas = this.soucCas.clone();
 		
 		/*
 		 * testovaci vypis
 		 */
-		//System.out.println(nova.cas+", "+nova.objem+", "+stara.cas+", "+stara.objem);
+		//System.out.println(nova.den+", "+nova.cas+", "+stara.den+", "+stara.cas);
 		
 	}
 	

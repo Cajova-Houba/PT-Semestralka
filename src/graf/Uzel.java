@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
+import main.Cas;
 import main.Simulator;
 
 
@@ -45,7 +46,7 @@ public class Uzel implements Observer{
 	/**
 	 * Soucasny cas. Aktualizovano z tridy Simulator pres navrhovy vzor Vydavatel-Predplatitel.
 	 */
-	private int[] soucCas;
+	protected Cas soucCas;
 	
 	/**
 	 * Odkaz na tridu simulator kvuli prihlasovani novych aut. (navrhovy vzor vydavatel-predplatitel)
@@ -66,7 +67,7 @@ public class Uzel implements Observer{
 		this.poloha[1] = y;
 		this.id = id;
 		this.typ = typ;
-		this.soucCas = new int[] {0,0};
+		this.soucCas = new Cas();
 		this.sim = sim;
 	}
 	
@@ -104,24 +105,32 @@ public class Uzel implements Observer{
 		
 		// tady
 		g2.fillRect(x1, y1, (int)w, (int)h);
+		g2.setColor(puvodniC);
+	}
+	
+	public void vykresliCesty(Graphics2D g2, float Xmeritko, float Ymeritko)
+	{
+		Color puvodniC = g2.getColor();
+		g2.setColor(Color.black);	
 		
-		
-		//vykresleni cest k sousedum
-		
-		g2.setColor(Color.black);
+		float w = 3*Xmeritko;
+		int x1 = (int)(this.poloha[0] * Xmeritko - (int)(w/2));
+		int y1 = (int)(this.poloha[1] * Ymeritko - (int)(w/2));
 		int[] sousedPoloha = new int[2];
 		int x2,y2;
+		
 		for(Integer i : this.sousedi)
+			
 		{ 
 			sousedPoloha = Simulator.objekty[i.intValue()].poloha;
 			x2 = (int)(sousedPoloha[0] * Xmeritko);
 			y2 = (int)(sousedPoloha[1] * Ymeritko);
 			g2.drawLine(x1, y1, x2, y2);
+			
 		}
 		
 		g2.setColor(puvodniC);
 	}
-	
 	
 	/**
 	 * Spocte vzdalenost mezi soucasnym uzlem a dodanym uzlem.
@@ -142,9 +151,9 @@ public class Uzel implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		//predani casu od tridy simulator
-		if(arg1 instanceof int[])
+		if(arg1 instanceof Cas)
 		{
-			this.soucCas = (int[])arg1;
+			this.soucCas = (Cas)arg1;
 		}
 	}
 }

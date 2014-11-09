@@ -54,33 +54,57 @@ public class Simulator extends Observable{
 	public final int ZACATEK_DNE = 8;
 	public final int KONEC_DNE = 16;
 	
-	private static int soucHodina = 0;
-	private static int soucDen = 0;
+	
+	private static Cas soucCas;
+	
 	
 	/**
-	 * Timer ridici simulaci hodin.
+	 * Timer ridici simulaci casu.
 	 */
-	private Timer timerH;
+	private Timer timerCas;
 	
 	//konstruktor vola zacatek simulace
 	public Simulator(){
 		
-		timerH = new Timer(1000, new ActionListener() {
+		soucCas = new Cas();
+		timerCas = new Timer(10, new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				if(soucHodina == 24)
+				if(soucCas.den == 1)
 				{
-					soucDen++;
-					soucHodina = 0;
-					timerH.stop();
+					timerCas.stop();
+					return;
 				}
 				
-				simulujHodinu(soucHodina);
+				/*
+				 * Zacatek noveho dne. 
+				 */
+				if (soucCas.hodina == 0 && soucCas.minuta == 0)
+				{
+					simulujDen();
+				}
+				
+				/*
+				 * Zacatek nove hodiny.
+				 */
+				if(soucCas.minuta == 0)
+				{
+					simulujHodinu(soucCas.hodina);
+				}
+					
+				/*
+				 * Konec dne.
+				 */
+				if(soucCas.hodina == 23 && soucCas.minuta == 59)
+				{
+					statistikaDne();
+				}
+				
 				noteCas();
 				notePrekresli();
-				soucHodina++;
+				soucCas.incCas();
 			}
 		});
 	}
@@ -93,7 +117,7 @@ public class Simulator extends Observable{
 	public void simuluj(){
 		
 		pivovar.hospodyTank.putAll(hospodyTank);
-		spoctiVzdalenosti();
+		//spoctiVzdalenosti();
 		rozdelHospody();
 		startSimulace();
 	}
@@ -101,22 +125,46 @@ public class Simulator extends Observable{
 	//pro potreby GUI - start, restart, pauza..
 	public void startSimulace()
 	{
-		soucDen = 0;
-		soucHodina = 0;
+		soucCas = new Cas();
+		timerCas.start();
 		
 		noteCas();
-		simulujDen();
 	}
+	
+	
+	
 	/**
 	 * Metoda provadejici simulaci jednoho dne.
 	 */
 	public void simulujDen(){
 		
-		addLog("Simuluji den: "+soucDen);
+		addLog("Simuluji den: "+soucCas.den);
 		generujObjednavky();
-		//pivovar.testAuta();
 		
-		timerH.start();
+		/*
+		 * Presunuto do metody statistikaDne()
+		 * 
+		if(getCas().den != 0){
+			
+			addLog("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+			MainApp.zapisDoSouboru("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+			addLog("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+			MainApp.zapisDoSouboru("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+			addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+			
+			for(Prekladiste p : prekladiste.values()){
+				addLog("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+				MainApp.zapisDoSouboru("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+				addLog("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+				MainApp.zapisDoSouboru("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+				addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+				MainApp.zapisDoSouboru("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			}
+			
+		}*/
+		
+		//pivovar.testAuta();
 
 		/*
 		 * test pro zjisteni poctu prijatych objednavek u jednoho prekladiste
@@ -145,25 +193,60 @@ public class Simulator extends Observable{
 		 * Projde hospody a zjisti, ktera si objednava tuto hodinu
 		 * Objednavky zaradi do fronty prislusneho prekladiste
 		 */
-		addLog("Simuluji hodinu "+soucHodina);
+		addLog("Simuluji hodinu "+hodina);
 		prijmiObjednavky(hodina);
 		
+		while((pivovar.objednavky.size() > 20) && ((hodina <= 14) && (hodina >= 8))){
+			pivovar.zpracujObjednavky();
+		}
 		
-		prekladiste.get(4001).zpracujObjednavky();
+		for(Prekladiste p : prekladiste.values()){
 		
-		
-		/*for(Prekladiste p : prekladiste.values()){
-		
-			while((p.objednavky.size() > 50) && ((hodina < 16) && (hodina >= 8))){
+			while((p.objednavky.size() > 20) && ((hodina <= 14) && (hodina >= 8))){
 				
 				p.zpracujObjednavky();
-			
+				
 			}
 			
-		}*/
+		}
+		
 		
 	}
 	
+	/**
+	 * Metoda zjisti statistiku dne:
+	 * 		- Pocet zbylych sudu u prekladist
+	 * 		- Pocet vozu kazdeho prekladiste
+	 * 		- Pocet prijatych objednavek
+	 * 		- Pocet zpracovanych objednavek
+	 */
+	private void statistikaDne()
+	{
+		MainApp.zapisDoSouboru("==================");
+		MainApp.zapisDoSouboru("= STATISTIKA DNE =");
+		MainApp.zapisDoSouboru("==================");
+		MainApp.zapisDoSouboru("Pivovar: ");
+		addLog("Pivovar: ma "+ pivovar.vozy.size() +" vozu");
+		MainApp.zapisDoSouboru(pivovar.vozy.size() +" vozu");
+		addLog("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+		MainApp.zapisDoSouboru("zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
+		addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		MainApp.zapisDoSouboru("");
+		
+		for(Prekladiste p : prekladiste.values()){
+			MainApp.zapisDoSouboru("Prekladiste "+p.id);
+			MainApp.zapisDoSouboru("Sudy: "+p.sklad);
+			addLog("Prekladiste "+ (p.id-4001) +": ma "+ p.vozy.size() +" vozu");
+			MainApp.zapisDoSouboru(p.vozy.size() +" vozu");
+			addLog("               zbylo v nem "+ p.objednavky.size() +" objednavek");
+			MainApp.zapisDoSouboru("zbylo v nem "+ p.objednavky.size() +" objednavek");
+			addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("");
+		}
+		MainApp.zapisDoSouboru("");
+	}
 	
 	/**
 	 * Metoda rozdelujici hospodySud do kompetence nejblizsiho prepraviste
@@ -253,6 +336,7 @@ public class Simulator extends Observable{
 		for(int i = 0; i < test.length; i++){
 			
 			System.out.println("Prekladiste "+ (i+1) + ": " + test[i] + " hospod");
+			MainApp.zapisDoSouboru("Prekladiste "+ (i+1) + ": " + test[i] + " hospod");
 			
 		}
 		
@@ -266,7 +350,10 @@ public class Simulator extends Observable{
 			
 		}
 		System.out.println("Prekladiste soucet: " + soucet);
+		MainApp.zapisDoSouboru("Prekladiste soucet: " + soucet);
+		
 		System.out.println("Pivovar: " + pivovar.hospodyTank.size());
+		MainApp.zapisDoSouboru("Pivovar: " + pivovar.hospodyTank.size());
 		
 	}
 
@@ -361,11 +448,9 @@ public class Simulator extends Observable{
 		 * Projde po jedne vsechny hospodySud a nahodne jim zvoli objednavku
 		 */
 		for(HospodaSud hospoda : hospodySud.values()){
-			
-			rCas = r.nextFloat();
 			rObjem = r.nextFloat();
-			
-			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem));
+
+			hospoda.zadejObjednavku(zvolCasObjednavky(), zvolObjemObjednavky(rObjem), getCas().den);
 			
 		}
 		
@@ -375,10 +460,9 @@ public class Simulator extends Observable{
 		 */
 		for(HospodaTank hospoda : hospodyTank.values()){
 			
-			rCas = r.nextFloat();
 			rObjem = r.nextFloat();
 			
-			hospoda.zadejObjednavku(zvolCasObjednavky(rCas), zvolObjemObjednavky(rObjem));
+			hospoda.zadejObjednavku(zvolCasObjednavky(), zvolObjemObjednavky(rObjem), getCas().den);
 			
 		}
 		
@@ -408,16 +492,20 @@ public class Simulator extends Observable{
 	 * @param rCas - nahodne cislo v rozsahu (0,1) pro urceni casu objednavky
 	 * @return nahodne urceny cas objednavky
 	 */
-	public int zvolCasObjednavky(float rCas){
+	public int zvolCasObjednavky(){
 		
 		/*
 		 * Cas objednavky je urcen gaussovym rozdelenim
 		 * Nejvice objednavek chodi kolem 10
 		 * Posledni objednavka muze prijit max 16:00
 		 * Prvni objednavka muze prijit nejdrive v 8:00
-		 *  
+		 * Funkce pro normalni rozlozeni:
+		 * 	f(x) = 1/(o*sqrt(2*PI)) * exp(-(x-mid)*(x-mid) / (2*o*o))
+		 * kde mid=10 a o=2.5
+		 * 
+		 * tato funkce lze v jave nahradit: r.nextGaussian()*2.5 + 10
 		 */
-		if(rCas < 0.05){ return 8; }
+		/*if(rCas < 0.05){ return 8; }
 		else if(rCas < 0.15){ return 9; }
 		else if(rCas < 0.50){ return 10; }
 		else if(rCas < 0.65){ return 11; }
@@ -425,7 +513,17 @@ public class Simulator extends Observable{
 		else if(rCas < 0.85){ return 13; }
 		else if(rCas < 0.90){ return 14; }
 		else if(rCas < 0.95){ return 15; }
-		else{ return 16; }
+		else{ return 16; }*/
+		
+		/*
+		 * funkce vraci hodnoty v prilis velkem rozmezi, proto je omezime jen na hodnoty od 8 do 16 
+		 * vsechny hodnoty, ktere budou mimo tento interval budou vraceny jako hodnota 10
+		 */
+		double o = 2.5, mid=10;
+		Random r = new Random();
+		int cislo = (int)Math.round(r.nextGaussian()*o+mid);
+		cislo = (cislo >=8) && (cislo<=16) ? cislo : (int)mid;
+		return cislo;      
 		
 	}
 	
@@ -446,7 +544,8 @@ public class Simulator extends Observable{
 	private void noteCas()
 	{
 		setChanged();
-		notifyObservers(new int[] {soucDen,soucHodina});
+		//notifyObservers(new int[] {soucDen,soucHodina});
+		notifyObservers(soucCas.clone());
 	}
 	
 	/**
@@ -463,9 +562,9 @@ public class Simulator extends Observable{
 	 * Metoda vraci soucasny cas.
 	 * @return Cas ve formatu {den,hodina}
 	 */
-	public static int[] getCas()
+	public static Cas getCas()
 	{
-		return new int [] {soucDen,soucHodina};
+		return soucCas.clone();
 	}
 	
 	/**
@@ -488,17 +587,17 @@ public class Simulator extends Observable{
 	
 	public void resetSimulace()
 	{
-		timerH.stop();
+		timerCas.stop();
 		startSimulace();
 	}
 	
 	public void pauzaSimulace()
 	{
-		timerH.stop();
+		timerCas.stop();
 	}
 	
 	public void pokracovaniSimulace()
 	{
-		timerH.start();
+		timerCas.start();
 	}
 }
