@@ -1,13 +1,17 @@
 package gui;
 
+import graf.UzelTyp;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -56,13 +60,26 @@ public class Okno extends JFrame implements Observer{
 	private JButton bStopSim;
 	private JButton bStartSim;
 	
+	
+	//komponenty k vybiracimu panelu
+	private JLabel vybrUzelLab;
+	private final String vybrMsg = "Vybran uzel :";
+	private final String nevybrMsg = "Nevybran zadny uzel.";
+	
+	private JLabel typUzluLab;
+	private final String typMsg = "Typ uzlu: ";
+	
+	private JLabel polohaLab;
+	private final String polMsg = "Poloha: ";
+	
+	
 	public Okno(Simulator sim)
 	{
 		this.log = new StringBuffer();
 		this.sim = sim;
 		
 		this.setTitle("PT - simulace");
-		this.setSize(new Dimension(800, 600));
+		this.setSize(new Dimension(1000, 600));
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		
@@ -70,6 +87,7 @@ public class Okno extends JFrame implements Observer{
 		this.add(inicInfoPanel(), BorderLayout.NORTH);
 		this.add(inicLogPanel(), BorderLayout.WEST);
 		this.add(inicOvlPanel(), BorderLayout.SOUTH);
+		this.add(inicVyberPanel(), BorderLayout.EAST);
 		
 		this.setVisible(true);
 	}
@@ -81,7 +99,7 @@ public class Okno extends JFrame implements Observer{
 	 */
 	private Container inicPanel()
 	{
-		zob = new Zobrazovac();
+		zob = new Zobrazovac(this);
 		JScrollPane sp = new JScrollPane(zob);
 		
 		sp.setPreferredSize(new Dimension(500,500));
@@ -90,7 +108,7 @@ public class Okno extends JFrame implements Observer{
 	}
 	
 	/**
-	 * Metoda inicializuje info panel.V hlavni aplikaci by mel byt zobrazovan na strane.
+	 * Metoda inicializuje info panel.
 	 * 
 	 * @return Panel s labelama.
 	 */
@@ -153,6 +171,59 @@ public class Okno extends JFrame implements Observer{
 		pan.add(Box.createRigidArea(new Dimension(15, 0)));
 		pan.add(bStartSim);
 		pan.add(Box.createHorizontalGlue());
+		
+		return sp;
+	}
+	
+	/**
+	 * Metodu vola instance tridy {@link Zobrazovac}. Metoda aktualizuje informace v panelu vyberu.
+	 * 
+	 * @param id
+	 */
+	public void updateVyberPanel(int id)
+	{
+		if(id == -1)
+		{
+			vybrUzelLab.setText(nevybrMsg);
+			typUzluLab.setText(typMsg+nevybrMsg);
+			polohaLab.setText(polMsg+nevybrMsg);
+		}
+		else
+		{		
+			vybrUzelLab.setText(vybrMsg+id);
+			typUzluLab.setText(typMsg+Simulator.objekty[id].typ);
+			int xu = (int)(Simulator.objekty[id].poloha[0] * zob.Xmeritko);
+			int yu = (int)(Simulator.objekty[id].poloha[1] * zob.Ymeritko);
+			polohaLab.setText(polMsg+xu+","+yu);
+		}
+	}
+	
+	/**
+	 * Metoda inicializuje panel pro vyber uzlu.
+	 * @return ScrollPane s panelem vyberu.
+	 */
+	private Container inicVyberPanel()
+	{
+		JPanel pan = new JPanel();
+		JScrollPane sp = new JScrollPane(pan);
+		
+		pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
+		vybrUzelLab = new JLabel();
+		vybrUzelLab.setFont(new Font("SansSerif", Font.BOLD, 18));
+		typUzluLab = new JLabel();
+		polohaLab = new JLabel();
+		int id = this.zob.vybranyUzel;
+		updateVyberPanel(id);
+		
+		//odsazeni ze stran
+		int gapx = 10;
+		//odsazeni ze spodu a z vrchu
+		int gapy = 10;
+		
+		pan.setBorder(BorderFactory.createEmptyBorder(gapy, gapx, gapy, gapx));
+		pan.add(vybrUzelLab);
+		pan.add(typUzluLab);
+		pan.add(polohaLab);
 		
 		return sp;
 	}

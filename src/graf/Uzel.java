@@ -54,6 +54,11 @@ public class Uzel implements Observer{
 	public Simulator sim;
 	
 	/**
+	 * Indikace vybrani uzlu ke zvyrazneni na mape.
+	 */
+	public boolean jeVybrany;
+	
+	/**
 	 * Vytvori uzel danych parametru.
 	 * 
 	 * @param id Identifikator uzlu.
@@ -69,6 +74,7 @@ public class Uzel implements Observer{
 		this.typ = typ;
 		this.soucCas = new Cas();
 		this.sim = sim;
+		this.jeVybrany = false;
 	}
 	
 	/**
@@ -85,7 +91,14 @@ public class Uzel implements Observer{
 		int x1 = (int)(this.poloha[0] * Xmeritko - (int)(w/2));
 		int y1 = (int)(this.poloha[1] * Ymeritko - (int)(w/2));
 		
-		g2.setColor(this.typ.getBarva());
+		if(this.jeVybrany)
+		{
+			g2.setColor(Color.ORANGE);
+		}
+		else
+		{			
+			g2.setColor(this.typ.getBarva());
+		}
 		
 		
 		/**
@@ -141,12 +154,30 @@ public class Uzel implements Observer{
 	{
 		
 		return (float) Math.sqrt((uzel.poloha[0] - this.poloha[0]) * (uzel.poloha[0] - this.poloha[0]) +
-				(uzel.poloha[1] - this.poloha[1]) * (uzel.poloha[1] - this.poloha[1]));
-		
-		
+				(uzel.poloha[1] - this.poloha[1]) * (uzel.poloha[1] - this.poloha[1]));	
 	}
 	
-
+	/**
+	 * Pokud stred uzlu lezi na zadanych souradnichc, vrati true. Metoda vraci true pokud stred uzlu lezi take v uzkem okoli kliknuti.
+	 * @param x X.
+	 * @param y Y.
+	 * @return
+	 */
+	public boolean lezisTady(int x, int y)
+	{
+		int pres = 2;
+		int xs = this.poloha[0], ys = this.poloha[1];
+		
+		if ((x >= xs-pres) && (x <= xs+pres) && (y >= ys-pres) && (y <= ys+pres))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
@@ -156,4 +187,5 @@ public class Uzel implements Observer{
 			this.soucCas = (Cas)arg1;
 		}
 	}
+	
 }

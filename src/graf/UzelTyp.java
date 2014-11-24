@@ -10,17 +10,19 @@ import java.awt.Color;
  */
 public enum UzelTyp {
 	
-	UZEL(Color.black),
-	PIVOVAR(Color.green),
-	PREKLADISTE(Color.red),
-	HOSPODA_SUD(Color.blue),
-	HOSPODA_TANK(Color.cyan);
+	UZEL(Color.black,"Uzel"),
+	PIVOVAR(Color.green,"Pivovar"),
+	PREKLADISTE(Color.red,"Prekladiste"),
+	HOSPODA_SUD(Color.blue,"Hospoda-sud"),
+	HOSPODA_TANK(Color.cyan,"Hospoda-tank");
 	
 	private Color barva;
+	private String dsc;
 	
-	private UzelTyp(Color barva)
+	private UzelTyp(Color barva, String dsc)
 	{
 		this.barva = barva;
+		this.dsc = dsc;
 	}
 	
 	/**
@@ -32,4 +34,8 @@ public enum UzelTyp {
 		return this.barva;
 	}
 
+	public String toString()
+	{
+		return this.dsc;
+	}
 }

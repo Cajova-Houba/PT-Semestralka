@@ -10,6 +10,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -32,17 +36,27 @@ public class Zobrazovac extends JPanel{
 	
 	private final int VYSKA = 1500;
 	
-	private final float Xmeritko = SIRKA/DEF_SIRKA;
+	public final float Xmeritko = SIRKA/DEF_SIRKA;
 	
-	private final float Ymeritko = VYSKA/DEF_VYSKA;
+	public final float Ymeritko = VYSKA/DEF_VYSKA;
+	
+	//Odkaz na instanci okna
+	private final Okno okno;
+	
+	//prave vybrany uzel
+	public int vybranyUzel = -1;
 	
 	//private boolean mapaVykreslena = false;
 	
-	public Zobrazovac()
+	public Zobrazovac(Okno okno)
 	{
 		this.setPreferredSize(new Dimension(SIRKA, VYSKA));
 		this.setVisible(true);
+		this.addMouseListener(new Klikatko());
+		this.okno = okno; 
 	}
+	
+	
 	
 	/**
 	 * Metoda vykresli mapu na panel a nastavi atribut mapaVykreslena na true. Tim nebude dochazet ke stalemu
@@ -87,7 +101,67 @@ public class Zobrazovac extends JPanel{
 		vykresliMapu(g);
 		vykresliVozy(g);
 	}
+
+	/**
+	 * Metoda zjisti zda je na zadanych souradnicich (relativnich k panelu) uzel. Pokud ano, vrati jeho index v poli Simulator.objekty.
+	 * Pokud vrati -1, na zadanych souradnicich nic nelezi.
+	 * @param x X, relativni k panelu.
+	 * @param y Y, relativni k panelu.
+	 */
+	public int najdiUzel(int x, int y)
+	{
+		int id = -1;
+		int xo = (int)(x/Xmeritko);
+		int yo = (int)(y/Ymeritko);
+		
+		for (int i = 0; i < Simulator.objekty.length; i++) {
+			
+			if(Simulator.objekty[i].lezisTady(xo, yo))
+			{
+				id = i;
+			}
+			
+			Simulator.objekty[i].jeVybrany = false;
+		}
+		
+		return id;
+	}
 	
+	/**
+	 * Metoda vybere uzel na zadanych souradnicich.
+	 * @param x X, relativni k panelu.
+	 * @param y Y, relativni k panelu.
+	 */
+	public void vyberUzel(int x, int y)
+	{
+		int id = najdiUzel(x, y);
+		if(id != -1)
+		{
+			Simulator.objekty[id].jeVybrany = true;
+			this.vybranyUzel = id;
+			okno.updateVyberPanel(id);
+		}
+		else
+		{
+			this.vybranyUzel = -1;
+		}
+	}
 	
+	/**
+	 * Trida pro ziskani pozice mysi relativni vuci panelu.
+	 * @author Zdendek Vales
+	 *
+	 */
+	private class Klikatko extends MouseAdapter
+	{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			int x = e.getPoint().x;
+			int y = e.getPoint().y;
+			vyberUzel(x, y);
+		}
+	}
 	
 }
