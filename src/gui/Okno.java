@@ -3,6 +3,7 @@ package gui;
 import graf.UzelTyp;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import main.Cas;
 import main.Simulator;
@@ -71,6 +73,14 @@ public class Okno extends JFrame implements Observer{
 	
 	private JLabel polohaLab;
 	private final String polMsg = "Poloha: ";
+	
+	private JLabel zadejObjLab;
+	private final String zadejObjMsg = "Zadání objednávky";
+	private JButton zadejObjBtn;
+	private JLabel idLab;
+	private JLabel objemLab;
+	private JTextField idTF;
+	private JTextField objemTF;
 	
 	
 	public Okno(Simulator sim)
@@ -137,7 +147,7 @@ public class Okno extends JFrame implements Observer{
 	private Container inicLogPanel()
 	{
 		JPanel pan = new JPanel();
-		pan.setPreferredSize(new Dimension(300,0));
+		pan.setPreferredSize(new Dimension(200,0));
 		pan.setLayout(new BorderLayout());
 		
 		logArea = new JTextArea();
@@ -187,6 +197,7 @@ public class Okno extends JFrame implements Observer{
 			vybrUzelLab.setText(nevybrMsg);
 			typUzluLab.setText(typMsg+nevybrMsg);
 			polohaLab.setText(polMsg+nevybrMsg);
+			idTF.setText("");
 		}
 		else
 		{		
@@ -195,6 +206,7 @@ public class Okno extends JFrame implements Observer{
 			int xu = (int)(Simulator.objekty[id].poloha[0] * zob.Xmeritko);
 			int yu = (int)(Simulator.objekty[id].poloha[1] * zob.Ymeritko);
 			polohaLab.setText(polMsg+xu+","+yu);
+			idTF.setText(Integer.toString(id));
 		}
 	}
 	
@@ -210,8 +222,36 @@ public class Okno extends JFrame implements Observer{
 		pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
 		vybrUzelLab = new JLabel();
 		vybrUzelLab.setFont(new Font("SansSerif", Font.BOLD, 18));
+		vybrUzelLab.setAlignmentX(CENTER_ALIGNMENT);
 		typUzluLab = new JLabel();
+		typUzluLab.setAlignmentX(CENTER_ALIGNMENT);
 		polohaLab = new JLabel();
+		polohaLab.setAlignmentX(CENTER_ALIGNMENT);
+		
+		//vytvoreni komponent pro zadani objednavky
+		JPanel panPom = new JPanel(); //panel na idLab,idTF,objemLab,objemTF
+		zadejObjLab = new JLabel(zadejObjMsg);
+		zadejObjLab.setFont(new Font("SansSerif", Font.BOLD, 18));
+		idLab = new JLabel("ID H/P:");
+		objemLab = new JLabel("Objem:");
+		idTF = new JTextField(10);
+		idTF.setMaximumSize(idTF.getPreferredSize());
+		objemTF = new JTextField(10);
+		objemTF.setMaximumSize(objemTF.getPreferredSize());
+		zadejObjBtn = new JButton("Zadej");
+		zadejObjBtn.setAlignmentX(CENTER_ALIGNMENT);
+		panPom.setLayout(new BoxLayout(panPom,BoxLayout.X_AXIS));
+		panPom.add(Box.createHorizontalGlue());
+		panPom.add(idLab);
+		panPom.add(Box.createRigidArea(new Dimension(5,10)));
+		panPom.add(idTF);
+		panPom.add(Box.createRigidArea(new Dimension(10,10)));
+		panPom.add(objemLab);
+		panPom.add(Box.createRigidArea(new Dimension(5,10)));
+		panPom.add(objemTF);
+		panPom.add(Box.createHorizontalGlue());
+		
+		//inicializace komponent
 		int id = this.zob.vybranyUzel;
 		updateVyberPanel(id);
 		
@@ -224,6 +264,11 @@ public class Okno extends JFrame implements Observer{
 		pan.add(vybrUzelLab);
 		pan.add(typUzluLab);
 		pan.add(polohaLab);
+		pan.add(Box.createRigidArea(new Dimension(1, 30))); //odsazeni mezi vyberem a zadanim objednavky
+		pan.add(panPom);
+		pan.add(Box.createRigidArea(new Dimension(1,10)));
+		pan.add(zadejObjBtn);
+		
 		
 		return sp;
 	}

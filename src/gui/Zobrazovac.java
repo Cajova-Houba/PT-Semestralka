@@ -139,12 +139,12 @@ public class Zobrazovac extends JPanel{
 		{
 			Simulator.objekty[id].jeVybrany = true;
 			this.vybranyUzel = id;
-			okno.updateVyberPanel(id);
 		}
 		else
 		{
 			this.vybranyUzel = -1;
 		}
+		okno.updateVyberPanel(id);
 	}
 	
 	/**
