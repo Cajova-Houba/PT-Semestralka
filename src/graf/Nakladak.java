@@ -28,7 +28,6 @@ public class Nakladak extends Auto{
 		this.dobaNakladaniJednotky = 5;
 		this.soucCas = cas;
 		this.nalozenoCas = cas;
-		this.cesta = new LinkedList<Integer>();
 		this.poloha = new float[2];
 	}
 	

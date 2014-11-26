@@ -44,7 +44,7 @@ public class Auto implements Observer{
 	/**
 	 * Cesta po tkere auto pojede, obsahuje ID uzlu, bez pocatecniho.
 	 */
-	public LinkedList<Integer> cesta;
+	protected LinkedList<Integer> cesta;
 	
 	//seznam zpracovavanych objednavek
 	public	LinkedList<Objednavka> objednavky;
@@ -68,6 +68,7 @@ public class Auto implements Observer{
 		Auto.DEF_ID++;
 		this.DOMOV = domov;
 		this.zpracovaneObjednavky = 0;
+		this.cesta = new LinkedList<Integer>();
 	}
 	
 	/**
@@ -257,5 +258,13 @@ public class Auto implements Observer{
 	public int getPocZpracObj()
 	{
 		return this.zpracovaneObjednavky;
+	}
+	
+	/**
+	 * Metoda smaze ulozenou cestu.
+	 */
+	public void resetCesta()
+	{
+		this.cesta = new LinkedList<Integer>();
 	}
 }

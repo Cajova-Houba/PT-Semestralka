@@ -344,6 +344,7 @@ public class Okno extends JFrame implements Observer{
 		}
 		
 		//zadani objednavky
+		sim.zadejObjednavkuManualne(id, objem);
 	}
 	
 	private void zobrazChybu(String err)

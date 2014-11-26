@@ -196,13 +196,13 @@ public class Simulator extends Observable{
 		addLog("Simuluji hodinu "+hodina);
 		prijmiObjednavky(hodina);
 		
-		while((pivovar.objednavky.size() > 20) && ((hodina <= 14) && (hodina >= 8))){
+		while((pivovar.objednavky.size() >= 1) && ((hodina <= 14) && (hodina >= 8))){
 			pivovar.zpracujObjednavky();
 		}
 		
 		for(Prekladiste p : prekladiste.values()){
 		
-			while((p.objednavky.size() > 20) && ((hodina <= 14) && (hodina >= 8))){
+			while((p.objednavky.size() >= 1) && ((hodina <= 14) && (hodina >= 8))){
 				
 				p.zpracujObjednavky();
 				
@@ -230,8 +230,11 @@ public class Simulator extends Observable{
 		MainApp.zapisDoSouboru(pivovar.vozy.size() +" vozu");
 		addLog("         zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
 		MainApp.zapisDoSouboru("zbylo v nem "+ pivovar.objednavky.size() +" objednavek");
-		addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
-		MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		if (pivovar.objednavky.size() > 1)
+		{
+			addLog("         objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+			MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + pivovar.objednavky.peek().getDen() + ". dne " + pivovar.objednavky.peek().getCas() + ". hodiny");
+		}
 		MainApp.zapisDoSouboru("");
 		
 		for(Prekladiste p : prekladiste.values()){
@@ -241,8 +244,11 @@ public class Simulator extends Observable{
 			MainApp.zapisDoSouboru(p.vozy.size() +" vozu");
 			addLog("               zbylo v nem "+ p.objednavky.size() +" objednavek");
 			MainApp.zapisDoSouboru("zbylo v nem "+ p.objednavky.size() +" objednavek");
-			addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
-			MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			if (p.objednavky.size() > 1)
+			{
+				addLog("               objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+				MainApp.zapisDoSouboru("objednavka s nejvyssi prioritou je z " + p.objednavky.peek().getDen() + ". dne " + p.objednavky.peek().getCas() + ". hodiny");
+			}
 			MainApp.zapisDoSouboru("");
 		}
 		MainApp.zapisDoSouboru("");
@@ -399,13 +405,18 @@ public class Simulator extends Observable{
 	
 	
 	/**
-	 * Metoda projde objednavky hospod a aktualni zaradi do fronty prekladiste
+	 * Metoda projde objednavky hospod a aktualni zaradi do fronty prekladiste.
 	 * @param hodina - aktualni hodina
 	 */
 	public void prijmiObjednavky(int hodina){
 		
 		int pocObjednavek = 0;
 		for(HospodaSud hospoda : hospodySud.values()){
+			
+			if(hospoda.nova.getObjem() < 1)
+			{
+				continue;
+			}
 			
 			if(hospoda.nova.getCas()==hodina){
 				
@@ -416,6 +427,11 @@ public class Simulator extends Observable{
 		}
 		
 		for(HospodaTank hospoda : hospodyTank.values()){
+			
+			if(hospoda.nova.getObjem() < 1)
+			{
+				continue;
+			}
 			
 			if(hospoda.nova.getCas()==hodina){
 				
@@ -440,8 +456,6 @@ public class Simulator extends Observable{
 	public void generujObjednavky(){
 		 
 		Random r = new Random();
-		
-		float rCas;
 		float rObjem;
 		
 		/*
@@ -467,6 +481,18 @@ public class Simulator extends Observable{
 		}
 		
 		
+	}
+	
+	public void zadejObjednavkuManualne(int id, int objem)
+	{
+		if(objekty[id] instanceof HospodaSud)
+		{
+			((HospodaSud)objekty[id]).zmenaObjednavky(10, objem);
+		}
+		else if (objekty[id] instanceof HospodaTank)
+		{
+			((HospodaTank)objekty[id]).zmenaObjednavky(10, objem);
+		}
 	}
 	
 	/**

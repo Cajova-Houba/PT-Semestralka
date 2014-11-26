@@ -78,25 +78,24 @@ public class Prekladiste extends Skladiste{
 		nakl.poloha[0] = this.poloha[0];
 		nakl.poloha[1] = this.poloha[1];
 		Objednavka ob = this.objednavky.remove();
+
 		/*System.out.println();
 		System.out.println("Objednavka hospody:" + ob.id + " se zpracuje pres trasu: ");
-		*/
+		 */
 		delkaCesty += vyberCestu(this.id, ob.id, nakl);
-		//if(){
-			
-		//}
 		
 		while(nakl.pridejObjednavku(ob))
 		{
 			idtmp = ob.id;
 			
-			if(objednavky.size() < 1){
+			ob = vyberObjednavku(ob.id);
+			if (ob == null)
+			{
+				ob=nakl.objednavky.getLast();
 				break;
 			}
-			
-			ob = vyberObjednavku(ob.id);	
 			objednavky.remove(ob);
-
+			
 			delkaCesty += vyberCestu(idtmp, ob.id, nakl);
 			
 			if((nakl.objem > 24)||(13-Simulator.getCas().hodina)*(nakl.RYCHLOST) + 100 < delkaCesty){
@@ -125,9 +124,15 @@ public class Prekladiste extends Skladiste{
 		
 		//cesta zpatky
 		vyberCestu(ob.id, this.id, nakl);
-		nakl.kDispozici = false;
-		nakl.jede = true;
-
+		if (nakl.objem >= 1)
+		{
+			nakl.kDispozici = false;
+			nakl.jede = true;
+		}
+		else
+		{
+			nakl.resetCesta();
+		}
 	}
 
 	

@@ -1,10 +1,8 @@
 package graf;
 
 
-import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 import main.Simulator;
@@ -77,9 +75,7 @@ public class Pivovar extends Skladiste{
 		cist.poloha[0] = this.poloha[0];
 		cist.poloha[1] = this.poloha[1];
 		Objednavka ob = this.objednavky.remove();
-		/*System.out.println();
-		System.out.println("Objednavka hospody:" + ob.id + " se zpracuje pres trasu: ");
-		*/
+
 		delkaCesty += vyberCestu(this.id, ob.id, cist);
 		
 		
@@ -87,17 +83,19 @@ public class Pivovar extends Skladiste{
 		{
 			idtmp = ob.id;
 			
-			if(objednavky.size() < 1){
+			ob = vyberObjednavku(ob.id);
+			if (ob == null)
+			{
+				ob=cist.objednavky.getLast();
 				break;
 			}
-			
-			ob = vyberObjednavku(ob.id);	
 			objednavky.remove(ob);
-
+			
 			delkaCesty += vyberCestu(idtmp, ob.id, cist);
 			
+			
 			if((cist.objem > 44)||(13-Simulator.getCas().hodina)*(cist.RYCHLOST-10) + 120 < delkaCesty){
-				//System.out.println("Nakladak ma "+nakl.objem);
+				//System.out.println("cistadak ma "+nakl.objem);
 				cist.kDispozici = false;
 				//System.out.println("Auto jede " + delkaCesty + "km");
 				break;		
@@ -120,8 +118,15 @@ public class Pivovar extends Skladiste{
 		
 		//cesta zpatky
 		vyberCestu(ob.id, this.id, cist);
-		cist.kDispozici = false;
-		cist.jede = true;
+		if (cist.objem >= 1)
+		{
+			cist.kDispozici = false;
+			cist.jede = true;
+		}
+		else
+		{
+			cist.resetCesta();
+		}
 
 	}
 	

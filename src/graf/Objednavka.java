@@ -7,17 +7,17 @@ public class Objednavka implements Comparable<Objednavka>{
 
 
 	/**
-	 * udaj o objemu objednavky (1,6)
+	 * Mnozstvi objednaneho piva (1,6)
 	 */
 	int objem = 0;
 	
 	/**
-	 * udaj o case objednavky (8-16)
+	 * Cas zadani objednavky (8-16)
 	 */
 	int cas = 0;
 	
 	/**
-	 * udaj o dni podanii objednavky (0-6)
+	 * Den podani objednavky (0-6)
 	 */
 	int den = 0;
 	
