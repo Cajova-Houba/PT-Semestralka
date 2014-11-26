@@ -100,6 +100,8 @@ public class Zobrazovac extends JPanel{
 	{
 		vykresliMapu(g);
 		vykresliVozy(g);
+		//aktualizuje sklad ve vyberovem panelu v Okno
+		okno.updateVyberPanel(vybranyUzel);
 	}
 
 	/**
@@ -144,7 +146,7 @@ public class Zobrazovac extends JPanel{
 		{
 			this.vybranyUzel = -1;
 		}
-		okno.updateVyberPanel(id);
+		okno.setVyberPanel(id);
 	}
 	
 	/**

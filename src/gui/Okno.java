@@ -18,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -73,6 +74,9 @@ public class Okno extends JFrame implements Observer{
 	
 	private JLabel polohaLab;
 	private final String polMsg = "Poloha: ";
+	
+	private JLabel skladLab;
+	private final String skladMsg = "Stav skladiste: ";
 	
 	private JLabel zadejObjLab;
 	private final String zadejObjMsg = "Zadání objednávky";
@@ -185,30 +189,6 @@ public class Okno extends JFrame implements Observer{
 		return sp;
 	}
 	
-	/**
-	 * Metodu vola instance tridy {@link Zobrazovac}. Metoda aktualizuje informace v panelu vyberu.
-	 * 
-	 * @param id
-	 */
-	public void updateVyberPanel(int id)
-	{
-		if(id == -1)
-		{
-			vybrUzelLab.setText(nevybrMsg);
-			typUzluLab.setText(typMsg+nevybrMsg);
-			polohaLab.setText(polMsg+nevybrMsg);
-			idTF.setText("");
-		}
-		else
-		{		
-			vybrUzelLab.setText(vybrMsg+id);
-			typUzluLab.setText(typMsg+Simulator.objekty[id].typ);
-			int xu = (int)(Simulator.objekty[id].poloha[0] * zob.Xmeritko);
-			int yu = (int)(Simulator.objekty[id].poloha[1] * zob.Ymeritko);
-			polohaLab.setText(polMsg+xu+","+yu);
-			idTF.setText(Integer.toString(id));
-		}
-	}
 	
 	/**
 	 * Metoda inicializuje panel pro vyber uzlu.
@@ -227,6 +207,8 @@ public class Okno extends JFrame implements Observer{
 		typUzluLab.setAlignmentX(CENTER_ALIGNMENT);
 		polohaLab = new JLabel();
 		polohaLab.setAlignmentX(CENTER_ALIGNMENT);
+		skladLab = new JLabel();
+		skladLab.setAlignmentX(CENTER_ALIGNMENT);
 		
 		//vytvoreni komponent pro zadani objednavky
 		JPanel panPom = new JPanel(); //panel na idLab,idTF,objemLab,objemTF
@@ -238,7 +220,7 @@ public class Okno extends JFrame implements Observer{
 		idTF.setMaximumSize(idTF.getPreferredSize());
 		objemTF = new JTextField(10);
 		objemTF.setMaximumSize(objemTF.getPreferredSize());
-		zadejObjBtn = new JButton("Zadej");
+		zadejObjBtn = new JButton(new aZadejObjednavkuManualne());
 		zadejObjBtn.setAlignmentX(CENTER_ALIGNMENT);
 		panPom.setLayout(new BoxLayout(panPom,BoxLayout.X_AXIS));
 		panPom.add(Box.createHorizontalGlue());
@@ -253,7 +235,7 @@ public class Okno extends JFrame implements Observer{
 		
 		//inicializace komponent
 		int id = this.zob.vybranyUzel;
-		updateVyberPanel(id);
+		setVyberPanel(id);
 		
 		//odsazeni ze stran
 		int gapx = 10;
@@ -264,6 +246,7 @@ public class Okno extends JFrame implements Observer{
 		pan.add(vybrUzelLab);
 		pan.add(typUzluLab);
 		pan.add(polohaLab);
+		pan.add(skladLab);
 		pan.add(Box.createRigidArea(new Dimension(1, 30))); //odsazeni mezi vyberem a zadanim objednavky
 		pan.add(panPom);
 		pan.add(Box.createRigidArea(new Dimension(1,10)));
@@ -271,6 +254,104 @@ public class Okno extends JFrame implements Observer{
 		
 		
 		return sp;
+	}
+	
+	
+	/**
+	 * Metoda aktualizuje komponentu skladLab na spravnou informaci o objemu piva.
+	 * @param ID uzlu z intervalu <0;4008>.
+	 */
+	public void updateVyberPanel(int id)
+	{
+		if((id < 0) || (id > 4008))
+		{
+			return ;
+		}
+		else
+		{
+			skladLab.setText(skladMsg+Simulator.objekty[id].sklad);
+		}
+	}
+	
+	/**
+	 * Metodu vola instance tridy {@link Zobrazovac}. Metoda nastavi informace v panelu vyberu podle zadaneho id uzlu.
+	 * Pokud id nelezi v itnervalu <0;4008>, nevybere se zadny uzel.
+	 * 
+	 * @param id ID uzlu z intervalu <0;4008>.
+	 */
+	public void setVyberPanel(int id)
+	{
+		if((id < 0) || (id > 4008))
+		{
+			vybrUzelLab.setText(nevybrMsg);
+			typUzluLab.setText(typMsg+nevybrMsg);
+			polohaLab.setText(polMsg+nevybrMsg);
+			skladLab.setText(skladMsg+nevybrMsg);
+			idTF.setText("");
+		}
+		else
+		{		
+			vybrUzelLab.setText(vybrMsg+id);
+			typUzluLab.setText(typMsg+Simulator.objekty[id].typ);
+			int xu = (int)(Simulator.objekty[id].poloha[0] * zob.Xmeritko);
+			int yu = (int)(Simulator.objekty[id].poloha[1] * zob.Ymeritko);
+			polohaLab.setText(polMsg+xu+","+yu);
+			skladLab.setText(skladMsg+Simulator.objekty[id].sklad);
+			idTF.setText(Integer.toString(id));
+		}
+	}
+
+	/**
+	 * Metoda vezme udaje z komponent idTF a objemTF a zadá Simulátoru novou objednávku. 
+	 * Pokud jsou údaje nekorektně zadané, vyhodí chybovou hlášku.
+	 */
+	public void manualniObjednavka()
+	{
+		int id,objem;
+		
+		try
+		{
+			id = Integer.parseInt(idTF.getText());
+			objem = Integer.parseInt(objemTF.getText());
+		}
+		catch(Exception e)
+		{
+			zobrazChybu("Chyba: Špatný formát zadaných údaju.");
+			return ;
+		}
+		
+		//Kontrola zadanych udaju
+		if(id == 0)
+		{
+			zobrazChybu("Chyba: Pivovar nemůže objednávat.");
+			return ;
+		}
+		else if ((id < 1) || (id > 4008))
+		{
+			zobrazChybu("Chyba: ID musí být v intervalu <1;4008>.");
+			return ;
+		}
+		else if(((id >=1) && (id <= 4000) ) &&
+				((objem < 1) || (objem > 6)))
+		{
+			zobrazChybu("Chyba: Objednávka pro hospodu musí být minimálně 1 a maximálně 6 sudů/hl piva.");
+			return ;
+		}
+		else if((objem < 1) || (objem > 1000))
+		{
+			zobrazChybu("Chyba: Objednávka pro prekladiste muze byt maximalne 1000 sudu.");
+			return ;
+		}
+		
+		//zadani objednavky
+	}
+	
+	private void zobrazChybu(String err)
+	{
+		JOptionPane.showMessageDialog(this, 
+				err,
+				"Chyba",
+				JOptionPane.WARNING_MESSAGE);
 	}
 	
 	@Override
@@ -350,6 +431,23 @@ public class Okno extends JFrame implements Observer{
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
 			sim.pauzaSimulace();
+		}
+	}
+	
+	private class aZadejObjednavkuManualne extends AbstractAction
+	{
+
+		public aZadejObjednavkuManualne() {
+			// TODO Auto-generated constructor stub
+			putValue(NAME, "Zadej");
+			putValue(SHORT_DESCRIPTION, "Zada objednavku");
+		}
+		
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			manualniObjednavka();
 		}
 	}
 }
