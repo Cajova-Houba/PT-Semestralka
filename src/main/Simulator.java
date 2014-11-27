@@ -15,7 +15,6 @@ import graf.Pivovar;
 import graf.Prekladiste;
 import graf.Uzel;
 
-
 public class Simulator extends Observable{
 
 	/**
@@ -54,9 +53,15 @@ public class Simulator extends Observable{
 	public final int ZACATEK_DNE = 8;
 	public final int KONEC_DNE = 16;
 	
-	
+	/**
+	 * Soucasny cas cele simulace.
+	 */
 	private static Cas soucCas;
 	
+	/**
+	 * Simulator zasle tuto hlasku mainApp po ukenci simulace.
+	 */
+	public static String KONCICI_HLASKA="Konec simulace.";
 	
 	/**
 	 * Timer ridici simulaci casu.
@@ -75,6 +80,8 @@ public class Simulator extends Observable{
 				if(soucCas.den == 1)
 				{
 					timerCas.stop();
+					addLog(KONCICI_HLASKA);
+					MainApp.vytvorStatistiku();
 					return;
 				}
 				

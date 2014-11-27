@@ -5,8 +5,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 
 import generator.Generator;
+import graf.Hospoda;
 import graf.HospodaSud;
 import graf.HospodaTank;
 import graf.Pivovar;
@@ -20,7 +24,10 @@ public class MainApp {
 	//trida ridici simulaci
 	private static Simulator sim = new Simulator();
 	
-	
+	/**
+	 * Metoda nacte ze souboru vygenerovanou mapu objeku.
+	 * @param jmeno	Jmeno souboru.
+	 */
 	private static void nactiZeSouboru(String jmeno)
 	{
 		//nacteni dat ze souboru
@@ -107,7 +114,10 @@ public class MainApp {
 		
 	}
 	
-	
+	/**
+	 * Metoda zapise retezec do souboru. Mela by byt pouzivana primarne jako log.
+	 * @param retezec Retezec k zapsani.
+	 */
 	public static void zapisDoSouboru(String retezec)
 	{
 		try
@@ -129,6 +139,53 @@ public class MainApp {
 		
 	}
 	
+	/**
+	 * Metoda vytvori statistiky hospod a aut a zapise je do souboru.
+	 */
+	public static void vytvorStatistiku()
+	{
+		//celkova spotreba piva
+		int celkemSudu = 0;
+		int celkemHl = 0;
+		int celkemObednavek = 0;
+		
+		int idH = 1; //id hospody
+		int idPr = 0; //id prekladiste ke kteremu hospoda patri
+		
+		String nl = "\r\n"; //nova radka
+		
+		//zapis do souboru
+		try {
+			File file = new File("hospody-statistika.xml");
+			FileWriter fw = new FileWriter(file,false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			fw.append("<?xml version=\"1.0\" ?>"+nl); //jedna se o xml soubor
+			fw.append("<statistika>"+nl);
+			fw.append("\t<hospody typ=\"sud\">"+nl); //element klasickych hospod
+			for(Hospoda hospoda : Simulator.hospodySud.values()) //vsechny hospody
+			{
+				fw.append("\t\t<hospoda id=\""+hospoda.id+"\">"+nl);
+				//pro kazdou hospodu 7 dni
+				for (int i = 0; i < 7; i++) {
+					fw.append("\t\t\t"); //odsazeni
+					fw.append("<den cislo=\""+i+"\">"+nl);
+					fw.append(hospoda.statistikaXML(i, 4));
+					fw.append("</den>"+nl);
+				}
+				fw.append("\t\t</hospoda>");
+			}
+			fw.append("\t</hospody>"+nl); //konec klasickych hospod
+			fw.append("</statistika>"+nl); //konec xml 
+			
+			//uzavreni zapisoveho proudu
+			bw.close();
+		} catch (Exception e) {
+			System.out.println("Chyba pri zapisu statistiky do xml souboru.");
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+	}
 	
 	private static void smazSouborVypis()
 	{
@@ -171,9 +228,6 @@ public class MainApp {
 		
 		//start simulace
 		sim.simuluj();
-		
-		//konec simulace
-		System.out.println("Konec simulace");
 	}
 
 }

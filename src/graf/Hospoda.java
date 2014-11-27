@@ -18,9 +18,9 @@ public class Hospoda extends Uzel{
 	public Objednavka stara;
 	
 	/**
-	 * Vysledna statistika.
+	 * Vysledna statistika. Pole ma 7 prvku, pro kazdy den 1
 	 */
-	public LinkedList<statZaznam> statistika;
+	public statZaznam[] statistika;
 	
 	/**
 	 * Vytvori hospodu danych parametru.
@@ -35,6 +35,8 @@ public class Hospoda extends Uzel{
 		// TODO Auto-generated constructor stub
 		nova = new Objednavka(id,0,0,0);
 		stara = new Objednavka(id,0,0,0);
+		
+		statistika = new statZaznam[7];
 	}
 	
 	
@@ -97,11 +99,29 @@ public class Hospoda extends Uzel{
 	 */
 	public void pridejStatZaznam(int autoID, Objednavka ob)
 	{
-		statistika.add(new statZaznam(new Cas(ob.den, ob.cas, 0), soucCas, ob.objem, autoID));
+
+		statistika[soucCas.den] = new statZaznam(new Cas(ob.den, ob.cas, 0), soucCas, ob.objem, autoID);
 	}
 	
 	/**
-	 * Metoda reprezentuje jeden zaznam urceny pro vyslednou statitiku.
+	 * Metoda vrati statistiku pro jeden den v podobne xml tagu.
+	 * @param den	Den.
+	 * @param odsazeni	Pocet tabulatoru pro odsazeni kazdeho tagu.
+	 * @return	Statistika pro jeden den v XML.
+	 */
+	public String statistikaXML(int den, int odsazeni)
+	{
+		StringBuffer vysledek = new StringBuffer();
+		if(den < 0 || den > 6 || statistika[den] == null)
+		{
+			return "";
+		}
+		
+		return statistika[den].toXMLtags(odsazeni);
+	}
+	
+	/**
+	 * Prepravka pro uchovavani statistickych zaznamu.
 	 * @author Zdenek Vales
 	 *
 	 */
@@ -124,6 +144,31 @@ public class Hospoda extends Uzel{
 		public String toCSVString()
 		{
 			return casPodani.toString()+","+casDoruceni.toString()+","+mnozstvi+","+autoID;
+		}
+		
+		/**
+		 * Metoda prevede zaznam do xml tagu a pred kazdy tag prida zadany pocet tabulatoru.
+		 * @param odsazeni Pocet tabulatoru.
+		 * @return	Zaznam jako XML tag.
+		 */
+		public String toXMLtags(int odsazeni)
+		{
+			//vyrobeni odsazeni
+			StringBuffer ods = new StringBuffer();
+			for (int i = 0; i < odsazeni; i++) {
+				ods.append("\t");
+			}
+			
+			return ods+"<casPodani value=\""+casPodani+"\" />\r\n"+
+				   ods+"<casDoruceni value=\""+casDoruceni+"\" />\r\n"+
+				   ods+"<mnozstvi value=\""+mnozstvi+"\" />\r\n"+
+				   ods+"<autoID value=\""+autoID+"\" />\r\n";
+			
+			/*lepsi pokud by bylo vice objednavek za den
+			 * return ods+"<zaznam casPodani=\""+casPodani+"\" "
+					+ "casDoruceni=\""+casDoruceni+"\" "
+					+ "mnozstvi=\""+mnozstvi+"\" "
+					+ "autoID=\""+autoID+"\" />\r\n";*/
 		}
 		
 	}
