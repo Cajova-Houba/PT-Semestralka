@@ -3,19 +3,7 @@ package graf;
 import main.Simulator;
 
 public class HospodaTank extends Hospoda{
-
-	/**
-	 * udaje o dnesni objednavce
-	 */
-	public Objednavka nova;
 	
-	/**
-	 * udaje o vcerejsi objednavce
-	 */
-	public Objednavka stara;
-	
-	
-
 	/**
 	 * Vytvori hospodu danych parametru. Vynuluje objednavky.
 	 * 

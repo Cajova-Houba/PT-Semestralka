@@ -13,7 +13,7 @@ public class HospodaSud extends Hospoda{
 	 * id prekladiste, od ktereho hospoda odebira
 	 */
 	public int idPrekladiste;
-
+	
 	/**
 	 * Vytvori hospodu danych parametru. Vynuluje objednavky a pocet prazdnych sudu.
 	 * 
@@ -36,4 +36,15 @@ public class HospodaSud extends Hospoda{
 		this.idPrekladiste = idPrekladiste;
 	}
 	
+	@Override
+	/**
+	 * Viz {@link Uzel}.
+	 */
+	public void prijmiNaklad(Objednavka ob, int idAuta) {
+		// TODO Auto-generated method stub
+		//prazdne sudy, nutne jeste pred volanim super.prijmiNaklad()
+		this.prazdneSudy += this.sklad;
+		
+		super.prijmiNaklad(ob, idAuta);
+	}
 }

@@ -16,7 +16,7 @@ import main.Simulator;
  * @author Zděnek Valeš
  *
  */
-public class Uzel implements Observer{
+public class Uzel{
 	
 	/**
 	 * Identifikator uzlu.
@@ -44,11 +44,6 @@ public class Uzel implements Observer{
 	public int sklad;
 	
 	/**
-	 * Soucasny cas. Aktualizovano z tridy Simulator pres navrhovy vzor Vydavatel-Predplatitel.
-	 */
-	protected Cas soucCas;
-	
-	/**
 	 * Odkaz na tridu simulator kvuli prihlasovani novych aut. (navrhovy vzor vydavatel-predplatitel)
 	 */
 	public Simulator sim;
@@ -57,6 +52,11 @@ public class Uzel implements Observer{
 	 * Indikace vybrani uzlu ke zvyrazneni na mape.
 	 */
 	public boolean jeVybrany;
+	
+	/**
+	 * Kolik bylo celkem dovezeno piva. Promenna se zvysi vzdy pri vylozeni piva.
+	 */
+	public int celkemPiva;
 	
 	/**
 	 * Vytvori uzel danych parametru.
@@ -72,9 +72,9 @@ public class Uzel implements Observer{
 		this.poloha[1] = y;
 		this.id = id;
 		this.typ = typ;
-		this.soucCas = new Cas();
 		this.sim = sim;
 		this.jeVybrany = false;
+		celkemPiva = 0;
 	}
 	
 	/**
@@ -178,14 +178,16 @@ public class Uzel implements Observer{
 		}
 	}
 	
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		//predani casu od tridy simulator
-		if(arg1 instanceof Cas)
-		{
-			this.soucCas = (Cas)arg1;
-		}
+	/**
+	 * Uzel prijme dane mnozstvi piva. Protoze hospody a prekladiste maji jiny zpusob prijeti
+	 * (u hospody se sklad prepisuje, u prekladiste se sklad zvysi), je nutne metodu v techto tridach
+	 * upravit. ID auta se predava kvuli statistickemu zaznamu.
+	 * @param ob Prijata objednavka.
+	 * @param idAuta ID auta, ktere naklad dovezlo.
+	 */
+	public void prijmiNaklad(Objednavka ob, int idAuta)
+	{
+		this.celkemPiva += ob.objem;
 	}
 	
 }

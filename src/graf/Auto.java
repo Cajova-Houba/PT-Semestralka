@@ -194,14 +194,10 @@ public class Auto implements Observer{
     				
     				MainApp.zapisDoSouboru(retezec);
     				System.out.println(retezec);
-    				if(Simulator.objekty[o.id] instanceof Hospoda)
-    				{
-    					//statisticky zaznam
-    					((Hospoda)Simulator.objekty[o.id]).pridejStatZaznam(this.id, o);
-    				}
     				
     				objem -= o.objem;
-    				Simulator.objekty[o.id].sklad += o.objem;
+    				//prijeti objednavky uzlem
+    				Simulator.objekty[o.id].prijmiNaklad(o,this.id);
     				potrebnyCas = o.objem * this.dobaNakladaniJednotky;
     			    vyrad = o;
     			    break;
@@ -271,5 +267,10 @@ public class Auto implements Observer{
 	public void resetCesta()
 	{
 		this.cesta = new LinkedList<Integer>();
+	}
+	
+	private class statZaznam
+	{		
+			
 	}
 }

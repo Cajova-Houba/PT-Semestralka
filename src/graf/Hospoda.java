@@ -1,7 +1,5 @@
 package graf;
 
-import java.util.LinkedList;
-
 import main.Cas;
 import main.Simulator;
 
@@ -84,12 +82,11 @@ public class Hospoda extends Uzel{
 		nova.setCas(cas);
 		nova.setObjem(mnozstvi);
 		nova.setDen(den);
-		nova.soucCas = this.soucCas.clone();
+		nova.soucCas = Simulator.getCas();
 		/*
 		 * testovaci vypis
 		 */
 		//System.out.println(nova.cas+", "+nova.objem+", "+stara.cas+", "+stara.objem);
-		
 	}
 
 	/**
@@ -100,7 +97,7 @@ public class Hospoda extends Uzel{
 	public void pridejStatZaznam(int autoID, Objednavka ob)
 	{
 
-		statistika[soucCas.den] = new statZaznam(new Cas(ob.den, ob.cas, 0), soucCas, ob.objem, autoID);
+		statistika[Simulator.getCas().den] = new statZaznam(new Cas(ob.den, ob.cas, 0), Simulator.getCas(), ob.objem, autoID);
 	}
 	
 	/**
@@ -118,6 +115,20 @@ public class Hospoda extends Uzel{
 		}
 		
 		return statistika[den].toXMLtags(odsazeni);
+	}
+	
+	@Override
+	/**
+	 * Viz {@link Uzel}.
+	 */
+	public void prijmiNaklad(Objednavka ob, int idAuta) {
+		// TODO Auto-generated method stub
+		super.prijmiNaklad(ob, idAuta);
+		
+		this.sklad = ob.objem;
+		
+		//pridani stat zaznamu
+		pridejStatZaznam(idAuta, ob);
 	}
 	
 	/**

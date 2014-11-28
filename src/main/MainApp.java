@@ -69,7 +69,6 @@ public class MainApp {
 						break;
 					case PREKLADISTE:
 						Prekladiste pr = new Prekladiste(id, typ, Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]),sim);
-						sim.addObserver(pr);
 						Simulator.objekty[id] = pr;
 						Simulator.prekladiste.put(id, pr);
 						
@@ -147,10 +146,6 @@ public class MainApp {
 		//celkova spotreba piva
 		int celkemSudu = 0;
 		int celkemHl = 0;
-		int celkemObednavek = 0;
-		
-		int idH = 1; //id hospody
-		int idPr = 0; //id prekladiste ke kteremu hospoda patri
 		
 		String nl = "\r\n"; //nova radka
 		
@@ -162,6 +157,7 @@ public class MainApp {
 			
 			fw.append("<?xml version=\"1.0\" ?>"+nl); //jedna se o xml soubor
 			fw.append("<statistika>"+nl);
+			
 			fw.append("\t<hospody typ=\"sud\">"+nl); //element klasickych hospod
 			for(Hospoda hospoda : Simulator.hospodySud.values()) //vsechny hospody
 			{
@@ -171,11 +167,35 @@ public class MainApp {
 					fw.append("\t\t\t"); //odsazeni
 					fw.append("<den cislo=\""+i+"\">"+nl);
 					fw.append(hospoda.statistikaXML(i, 4));
+					fw.append("\t\t\t</den>"+nl);
+				}
+				celkemSudu += hospoda.celkemPiva;
+				fw.append("\t\t</hospoda>"+nl);
+			}
+			fw.append("\t</hospody>"+nl);
+			
+			fw.append("\t<hospody typ=\"tank\">"+nl); //element tankovych hospod
+			for(Hospoda hospoda : Simulator.hospodyTank.values())
+			{
+				fw.append("\t\t<hospoda id=\""+hospoda.id+"\">"+nl);
+				//pro kazdou hospodu 7 dni
+				for (int i = 0; i < 7; i++) {
+					fw.append("\t\t\t"); //odsazeni
+					fw.append("<den cislo=\""+i+"\">"+nl);
+					fw.append(hospoda.statistikaXML(i, 4));
 					fw.append("</den>"+nl);
+					celkemHl += hospoda.celkemPiva;
 				}
 				fw.append("\t\t</hospoda>");
-			}
+			}			
 			fw.append("\t</hospody>"+nl); //konec klasickych hospod
+			
+			//souhrnne informace za celou dobu simulace
+			fw.append("\t<souhrn>"+nl);
+			fw.append("\t\t<celkemDodano sudu=\""+celkemSudu+"\" hl=\""+celkemHl+"\" />"+nl);
+			fw.append("\t\t<celkemVytvoreno nakl=\"\" cist=\"\" kam=\"\" />"+nl);
+			fw.append("\t</souhrn>"+nl);
+			
 			fw.append("</statistika>"+nl); //konec xml 
 			
 			//uzavreni zapisoveho proudu

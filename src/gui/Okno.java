@@ -1,5 +1,6 @@
 package gui;
 
+import graf.HospodaSud;
 import graf.UzelTyp;
 
 import java.awt.BorderLayout;
@@ -78,13 +79,18 @@ public class Okno extends JFrame implements Observer{
 	private JLabel skladLab;
 	private final String skladMsg = "Stav skladiste: ";
 	
+	private JLabel prazdneSudyLab;
+	private final String prazdneSudyMsg = "Pocet prazdnych sudu: ";
+	
 	private JLabel zadejObjLab;
 	private final String zadejObjMsg = "Zadání objednávky";
 	private JButton zadejObjBtn;
 	private JLabel idLab;
 	private JLabel objemLab;
+	private JLabel hodinaLab;
 	private JTextField idTF;
 	private JTextField objemTF;
+	private JTextField hodinaTF;
 	
 	
 	public Okno(Simulator sim)
@@ -209,6 +215,8 @@ public class Okno extends JFrame implements Observer{
 		polohaLab.setAlignmentX(CENTER_ALIGNMENT);
 		skladLab = new JLabel();
 		skladLab.setAlignmentX(CENTER_ALIGNMENT);
+		prazdneSudyLab = new JLabel();
+		prazdneSudyLab.setAlignmentX(CENTER_ALIGNMENT);
 		
 		//vytvoreni komponent pro zadani objednavky
 		JPanel panPom = new JPanel(); //panel na idLab,idTF,objemLab,objemTF
@@ -216,10 +224,13 @@ public class Okno extends JFrame implements Observer{
 		zadejObjLab.setFont(new Font("SansSerif", Font.BOLD, 18));
 		idLab = new JLabel("ID H/P:");
 		objemLab = new JLabel("Objem:");
+		hodinaLab = new JLabel("Hodina: ");
 		idTF = new JTextField(10);
 		idTF.setMaximumSize(idTF.getPreferredSize());
 		objemTF = new JTextField(10);
 		objemTF.setMaximumSize(objemTF.getPreferredSize());
+		hodinaTF = new JTextField(10);
+		hodinaTF.setMaximumSize(hodinaTF.getPreferredSize());
 		zadejObjBtn = new JButton(new aZadejObjednavkuManualne());
 		zadejObjBtn.setAlignmentX(CENTER_ALIGNMENT);
 		panPom.setLayout(new BoxLayout(panPom,BoxLayout.X_AXIS));
@@ -232,6 +243,15 @@ public class Okno extends JFrame implements Observer{
 		panPom.add(Box.createRigidArea(new Dimension(5,10)));
 		panPom.add(objemTF);
 		panPom.add(Box.createHorizontalGlue());
+		
+		JPanel panPom2 = new JPanel();
+		panPom2.setLayout(new BoxLayout(panPom2, BoxLayout.X_AXIS));
+		//panPom2.add(Box.createHorizontalGlue());
+		panPom2.add(hodinaLab);
+		panPom2.add(Box.createRigidArea(new Dimension(5, 10)));
+		panPom2.add(hodinaTF);
+		//panPom2.add(Box.createHorizontalGlue());
+		panPom2.setAlignmentX(CENTER_ALIGNMENT);
 		
 		//inicializace komponent
 		int id = this.zob.vybranyUzel;
@@ -247,8 +267,10 @@ public class Okno extends JFrame implements Observer{
 		pan.add(typUzluLab);
 		pan.add(polohaLab);
 		pan.add(skladLab);
+		pan.add(prazdneSudyLab);
 		pan.add(Box.createRigidArea(new Dimension(1, 30))); //odsazeni mezi vyberem a zadanim objednavky
 		pan.add(panPom);
+		pan.add(panPom2);
 		pan.add(Box.createRigidArea(new Dimension(1,10)));
 		pan.add(zadejObjBtn);
 		
@@ -270,6 +292,15 @@ public class Okno extends JFrame implements Observer{
 		else
 		{
 			skladLab.setText(skladMsg+Simulator.objekty[id].sklad);
+			if (Simulator.objekty[id] instanceof HospodaSud)
+			{
+				prazdneSudyLab.setVisible(true);
+				prazdneSudyLab.setText(prazdneSudyMsg+((HospodaSud)Simulator.objekty[id]).prazdneSudy);
+			}
+			else
+			{
+				prazdneSudyLab.setVisible(false);
+			}
 		}
 	}
 	
@@ -287,6 +318,7 @@ public class Okno extends JFrame implements Observer{
 			typUzluLab.setText(typMsg+nevybrMsg);
 			polohaLab.setText(polMsg+nevybrMsg);
 			skladLab.setText(skladMsg+nevybrMsg);
+			prazdneSudyLab.setVisible(false);
 			idTF.setText("");
 		}
 		else
@@ -297,6 +329,15 @@ public class Okno extends JFrame implements Observer{
 			int yu = (int)(Simulator.objekty[id].poloha[1] * zob.Ymeritko);
 			polohaLab.setText(polMsg+xu+","+yu);
 			skladLab.setText(skladMsg+Simulator.objekty[id].sklad);
+			if (Simulator.objekty[id] instanceof HospodaSud)
+			{
+				prazdneSudyLab.setVisible(true);
+				prazdneSudyLab.setText(prazdneSudyMsg+((HospodaSud)Simulator.objekty[id]).prazdneSudy);
+			}
+			else
+			{
+				prazdneSudyLab.setVisible(false);
+			}
 			idTF.setText(Integer.toString(id));
 		}
 	}
@@ -307,12 +348,13 @@ public class Okno extends JFrame implements Observer{
 	 */
 	public void manualniObjednavka()
 	{
-		int id,objem;
+		int id,objem,hodina;
 		
 		try
 		{
 			id = Integer.parseInt(idTF.getText());
 			objem = Integer.parseInt(objemTF.getText());
+			hodina = Integer.parseInt(hodinaTF.getText());
 		}
 		catch(Exception e)
 		{
@@ -342,9 +384,14 @@ public class Okno extends JFrame implements Observer{
 			zobrazChybu("Chyba: Objednávka pro prekladiste muze byt maximalne 1000 sudu.");
 			return ;
 		}
+		else if((hodina < 10) || (hodina > 16))
+		{
+			zobrazChybu("Chyba: Objednávku lze zadat pouze v rozsahu hodin 10-16.");
+			return;
+		}
 		
 		//zadani objednavky
-		sim.zadejObjednavkuManualne(id, objem);
+		sim.zadejObjednavkuManualne(id, objem, hodina);
 	}
 	
 	private void zobrazChybu(String err)

@@ -60,7 +60,7 @@ public class Objednavka implements Comparable<Objednavka>{
 
 	@Override
 	public String toString() {
-		return "Objednavka: [den=" + den + ", cas=" + soucCas.toString() + ", objem=" + objem +  ", id=" + id
+		return "Objednavka: [den=" + den + ", cas=" + cas + ", objem=" + objem +  ", id=" + id
 				+ "]";
 	}
 

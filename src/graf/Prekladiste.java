@@ -229,4 +229,10 @@ public class Prekladiste extends Skladiste{
 		}
 	}
 
+	@Override
+	public void prijmiNaklad(Objednavka ob, int idAuta) {
+		// TODO Auto-generated method stub
+		super.prijmiNaklad(ob, idAuta);
+		this.sklad += ob.objem;
+	}
 }

@@ -490,15 +490,15 @@ public class Simulator extends Observable{
 		
 	}
 	
-	public void zadejObjednavkuManualne(int id, int objem)
+	public void zadejObjednavkuManualne(int id, int objem, int hodina)
 	{
 		if(objekty[id] instanceof HospodaSud)
 		{
-			((HospodaSud)objekty[id]).zmenaObjednavky(10, objem);
+			((HospodaSud)objekty[id]).zmenaObjednavky(hodina, objem);
 		}
 		else if (objekty[id] instanceof HospodaTank)
 		{
-			((HospodaTank)objekty[id]).zmenaObjednavky(10, objem);
+			((HospodaTank)objekty[id]).zmenaObjednavky(hodina, objem);
 		}
 	}
 	
@@ -578,7 +578,7 @@ public class Simulator extends Observable{
 	{
 		setChanged();
 		//notifyObservers(new int[] {soucDen,soucHodina});
-		notifyObservers(soucCas.clone());
+		notifyObservers(soucCas);
 	}
 	
 	/**
