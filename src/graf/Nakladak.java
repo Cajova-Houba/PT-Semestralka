@@ -1,5 +1,7 @@
 package graf;
 
+import graf.Auto.statZaznam;
+
 import java.util.LinkedList;
 import java.util.Observable;
 
@@ -15,7 +17,6 @@ public class Nakladak extends Auto{
 	//minuta posledniho updatu nakladaku
 	int minuta;
 	
-	
 	public Nakladak(Cas cas, int domov){
 		
 		super(domov);
@@ -29,10 +30,8 @@ public class Nakladak extends Auto{
 		this.soucCas = cas;
 		this.nalozenoCas = cas;
 		this.poloha = new float[2];
+		this.typ = "Nakladak";
 	}
-	
-	
-	
 	
 	
 	/**
@@ -99,11 +98,20 @@ public class Nakladak extends Auto{
 					
 					this.jede = false;
 					this.kDispozici = true;
+					
+					//zapsani konecneho bodu - prekladiste
+					if(statCesta != null)
+					{
+						statCesta.add(new statZaznam(this.DOMOV, -1, 0));
+					}
+					
+					//zapsani statisticke cesty do statistiky
+					super.vlozStatCestu(statCesta);
 				}
 				
-				this.cesta.removeFirst();
 				//nakladak zkusi vylozit pokud je v cili
 				this.dobaVykladani = super.vyloz();
+				this.cesta.removeFirst();
 				
 				
 			}

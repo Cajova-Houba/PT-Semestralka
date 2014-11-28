@@ -10,6 +10,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import generator.Generator;
+import graf.Auto;
 import graf.Hospoda;
 import graf.HospodaSud;
 import graf.HospodaTank;
@@ -141,7 +142,7 @@ public class MainApp {
 	/**
 	 * Metoda vytvori statistiky hospod a aut a zapise je do souboru.
 	 */
-	public static void vytvorStatistiku()
+	public static void vytvorStatistikuHospod(String fname)
 	{
 		//celkova spotreba piva
 		int celkemSudu = 0;
@@ -149,9 +150,9 @@ public class MainApp {
 		
 		String nl = "\r\n"; //nova radka
 		
-		//zapis do souboru
+		//zapis do souboru hospody-statistika
 		try {
-			File file = new File("hospody-statistika.xml");
+			File file = new File(fname);
 			FileWriter fw = new FileWriter(file,false);
 			BufferedWriter bw = new BufferedWriter(fw);
 			
@@ -194,6 +195,42 @@ public class MainApp {
 			fw.append("\t<souhrn>"+nl);
 			fw.append("\t\t<celkemDodano sudu=\""+celkemSudu+"\" hl=\""+celkemHl+"\" />"+nl);
 			fw.append("\t\t<celkemVytvoreno nakl=\"\" cist=\"\" kam=\"\" />"+nl);
+			fw.append("\t</souhrn>"+nl);
+			
+			fw.append("</statistika>"+nl); //konec xml 
+			
+			//uzavreni zapisoveho proudu
+			bw.close();
+		} catch (Exception e) {
+			System.out.println("Chyba pri zapisu statistiky do xml souboru.");
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+	}
+	
+	public static void vytvorStatistikuAut(String fname)
+	{
+		String nl = "\r\n"; //nova radka
+		
+		//zapis do souboru hospody-statistika
+		try {
+			File file = new File(fname);
+			FileWriter fw = new FileWriter(file,false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			fw.append("<?xml version=\"1.0\" ?>"+nl); //jedna se o xml soubor
+			fw.append("<statistika>"+nl);
+			
+			fw.append("\t<auta>"+nl);
+			for(Auto a : sim.auta) //vsechny hospody
+			{
+				fw.append(a.statistikaXML(2));
+			
+			}
+			fw.append("\t</auta>"+nl);
+			
+			//souhrnne informace za celou dobu simulace
+			fw.append("\t<souhrn>"+nl);
 			fw.append("\t</souhrn>"+nl);
 			
 			fw.append("</statistika>"+nl); //konec xml 

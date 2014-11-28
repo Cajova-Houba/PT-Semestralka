@@ -1,0 +1,285 @@
+<?xml version="1.0" ?>
+<statistika>
+	<auta>
+		<auto id="0"  typ="Cisterna">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="0" />
+					<uzel id="856" />
+					<uzel id="2805" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="3514" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="1833" />
+					<uzel id="2687" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="2492" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="1788" />
+					<uzel id="3720" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="1691" />
+					<uzel id="3753" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="2180" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="3753" />
+					<uzel id="2030" />
+					<uzel id="188" />
+					<uzel id="2666" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="2447" />
+					<uzel id="2492" />
+					<uzel id="3393" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="3239" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="3409" />
+					<uzel id="3179" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="2312" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="22" />
+					<uzel id="294" />
+					<uzel id="3242" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="0" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="3"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4001" />
+					<uzel id="1704" />
+					<uzel id="1897" />
+					<uzel id="2343" />
+					<uzel id="2233" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="2211" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="1172" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="2528" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="3854" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="36" />
+					<uzel id="2084" />
+					<uzel id="259" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="121" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="1549" />
+					<uzel id="2591" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="429" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="4001" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4001" />
+					<uzel id="2481" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="1864" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="4001" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="8"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4002" />
+					<uzel id="1679" />
+					<uzel id="3578" />
+					<uzel id="1309" />
+					<uzel id="818" />
+					<uzel id="2686" />
+					<uzel id="58" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="194" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="1005" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="58" />
+					<uzel id="645" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="2644" />
+					<uzel id="1317" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="3023" />
+					<uzel id="586" />
+					<uzel id="291" />
+					<uzel id="3838" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="371" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="4002" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="15"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4003" />
+					<uzel id="3356" />
+					<uzel id="1181" />
+					<uzel id="2538" />
+					<uzel id="3858" />
+					<uzel id="115" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="1840" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="3203" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="1668" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="2061" />
+					<uzel id="3891" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="665" />
+					<uzel id="1174" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="227" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="432" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="3571" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="4003" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4003" />
+					<uzel id="1443" />
+					<uzel id="3543" />
+					<uzel id="648" />
+					<uzel id="714" />
+					<uzel id="1940" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="4003" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="19"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4004" />
+					<uzel id="744" />
+					<uzel id="922" />
+					<uzel id="224" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="1918" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="1462" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="1390" />
+					<uzel id="3487" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="2589" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="3968" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="1604" />
+					<uzel id="850" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="675" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="4004" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4004" />
+					<uzel id="3049" />
+					<uzel id="3323" />
+					<uzel id="3144" />
+					<uzel id="264" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="4004" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="25"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4005" />
+					<uzel id="1327" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="243" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="1500" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="1786" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="270" />
+					<uzel id="1489" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="270" />
+					<uzel id="1368" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="2516" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="4005" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4005" />
+					<uzel id="1281" />
+					<uzel id="3027" />
+					<uzel id="2119" />
+					<uzel id="1250" />
+					<uzel id="1953" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="4005" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="32"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4006" />
+					<uzel id="3789" />
+					<uzel id="1168" />
+					<uzel id="85" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="2863" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="952" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="2980" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="3703" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="340" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="911" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="2581" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="1018" />
+					<uzel id="2652" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="2653" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="4006" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4006" />
+					<uzel id="912" />
+					<uzel id="2327" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="4006" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="39"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4007" />
+					<uzel id="2302" />
+					<uzel id="2486" />
+					<uzel id="3589" />
+					<uzel id="2830" />
+					<uzel id="2724" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="2464" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="2776" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="3770" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="198" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="696" />
+					<uzel id="25" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="2108" 		vylozeno="5" 		nalozenoSudu="0" />					<uzel id="4007" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4007" />
+					<uzel id="555" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="4007" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+		<auto id="44"  typ="Nakladak">
+			<den cislo="0">
+				<cesta id="0" >
+					<uzel id="4008" />
+					<uzel id="2282" />
+					<uzel id="2608" />
+					<uzel id="2848" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="2421" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="2739" />
+					<uzel id="1087" 		vylozeno="1" 		nalozenoSudu="0" />					<uzel id="1055" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="2102" />
+					<uzel id="1096" />
+					<uzel id="552" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="1712" 		vylozeno="3" 		nalozenoSudu="0" />					<uzel id="1047" 		vylozeno="2" 		nalozenoSudu="0" />					<uzel id="1225" />
+					<uzel id="3647" 		vylozeno="4" 		nalozenoSudu="0" />					<uzel id="4008" />
+				</cesta>
+				<cesta id="1" >
+					<uzel id="4008" />
+					<uzel id="1515" />
+					<uzel id="701" />
+					<uzel id="1149" />
+					<uzel id="546" />
+					<uzel id="2920" 		vylozeno="6" 		nalozenoSudu="0" />					<uzel id="4008" />
+				</cesta>
+			</den>
+			<den cislo="1">
+			</den>
+			<den cislo="2">
+			</den>
+			<den cislo="3">
+			</den>
+			<den cislo="4">
+			</den>
+			<den cislo="5">
+			</den>
+			<den cislo="6">
+			</den>
+		</auto>
+	</auta>
+	<souhrn>
+	</souhrn>
+</statistika>

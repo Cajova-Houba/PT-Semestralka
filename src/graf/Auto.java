@@ -58,9 +58,29 @@ public class Auto implements Observer{
 	protected final int DOMOV;
 	
 	/**
+	 * Typ auta - auto, nakladak, cisterna, kamion. Pouze pro ulehceni metody, ktera tvori statistiku.
+	 */
+	protected String typ;
+	
+	/**
+	 * Pole seznamu cest. Na kazdy den pripada jeden seznam cest (=pole ma velikost 7).
+	 * Kazda polozka seznamu obsahuje pole statistickych zaznamu. 
+	 * Jeden tento statisticky zaznam indikuje uzel
+	 * kterym auto projelo. 
+	 */
+	protected LinkedList<statZaznam[]>[] statistika;
+	
+	/**
 	 * Pocet zpracovanych objednavek.
 	 */
 	protected int zpracovaneObjednavky;
+	
+	/**
+	 * Jedna statisticka cesta. Prekladiste (pivovar) tento seznam vzdy pri vyslani auta 
+	 * znovuvytvori. Po skonceni okruzni cesty, se udaje z tohoto seznamu prevedou na pole
+	 * a ulozi do statistika.
+	 */
+	protected LinkedList<statZaznam> statCesta;
 	
 	public Auto(int domov)
 	{
@@ -69,6 +89,8 @@ public class Auto implements Observer{
 		this.DOMOV = domov;
 		this.zpracovaneObjednavky = 0;
 		this.cesta = new LinkedList<Integer>();
+		this.statistika = new LinkedList[7];
+		this.typ = "Obecne auto";
 	}
 	
 	/**
@@ -82,9 +104,7 @@ public class Auto implements Observer{
 		{
 			return;
 		}
-		
-		
-		
+
 		float w = 2*Xmeritko;
 		float h = 2*Ymeritko;
 		Color puvodniC = g2.getColor();
@@ -184,7 +204,8 @@ public class Auto implements Observer{
     		int[] tmp = Simulator.getPoloha(o.id);
     		if(Math.abs(tmp[0] - poloha[0]) < chyba &&
     		   Math.abs(tmp[0] - poloha[0]) < chyba)
-    		   {
+    		    //auto vyklada
+    			{
     				if(this.DOMOV == 0){
     					retezec = "Auto " + this.id + " patrici pivovaru vyklada v case: " + Simulator.getCas().toString() + " "+o.toString();
     				}
@@ -200,8 +221,40 @@ public class Auto implements Observer{
     				Simulator.objekty[o.id].prijmiNaklad(o,this.id);
     				potrebnyCas = o.objem * this.dobaNakladaniJednotky;
     			    vyrad = o;
+    			    
+    			    //pridani statistickeho znaznmu
+    			    if(statCesta != null)
+    			    {   
+    			    	//kontrola jestli posledni zadana cesta nema stejn id hospody
+    			    	//jinak dochazi k vice stejnym zaznamum
+    			    	if(statCesta.isEmpty())
+    			    	{    			    		
+    			    		statCesta.add(new statZaznam(o.id, o.objem, 0));
+    			    	}
+    			    	else if(statCesta.getLast().idUzlu != o.id)
+    			    	{
+    			    		statCesta.add(new statZaznam(o.id, o.objem, 0));
+    			    	}
+    			    }
     			    break;
     		   }
+    		else
+    			{
+    				//auto pouze projizdi
+    			 if(statCesta != null)
+ 			    {   
+    				//kontrola jestli posledni zadana cesta nema stejn id hospody
+ 			    	//jinak dochazi k vice stejnym zaznamum
+ 			    	if(statCesta.isEmpty())
+			    	{    			    		
+ 			    		statCesta.add(new statZaznam(cesta.getFirst(), -1, 0));
+			    	}
+			    	else if(statCesta.getLast().idUzlu != cesta.getFirst())
+			    	{
+			    		statCesta.add(new statZaznam(cesta.getFirst(), -1, 0));
+			    	}
+ 			    }
+    			}
     	}
     	if(vyrad != null)
     	{
@@ -269,8 +322,169 @@ public class Auto implements Observer{
 		this.cesta = new LinkedList<Integer>();
 	}
 	
-	private class statZaznam
-	{		
+	/**
+	 * Metoda vytvori promennou statCesta.
+	 */
+	public void novaStatCesta()
+	{
+		this.statCesta = new LinkedList<statZaznam>();
+		this.statCesta.add(new statZaznam(this.DOMOV, -1, 0)); //pocatek cesty je v prekladisti
+	}
+	
+	/**
+	 * Metoda prida novou cestu do seznamu statistik.
+	 * Statistickou cestu si auto vytvari pri okruzni jizde.
+	 * Tato metoda ji prevede ze seznamu na pole a ulozi do nove
+	 * vytvorene polozky ve statistika.
+	 * 
+	 * @param Jedna okruzni cesta auta.
+	 */
+	public void vlozStatCestu(LinkedList<statZaznam> stCesta)
+	{
+		if (stCesta == null)
+		{
+			return;
+		}
+		int d = Simulator.getCas().den;
+		if(statistika[d] == null)
+		{
+			statistika[d] = new LinkedList<statZaznam[]>();
+		}
+		statistika[d].add(stCesta.toArray(new statZaznam[0]));
+	}
+	
+	/**
+	 * Kompletni statistika 1 auta za 7 dni.
+	 * @param odsazeni Pocet tabulatoru jako odsazeni.
+	 * @return	Statistika v XML
+	 */
+	public String statistikaXML(int odsazeni)
+	{
+		//odsazeni
+		StringBuffer ods = new StringBuffer();
+		StringBuffer vysledek = new StringBuffer();
+		for (int i = 0; i < odsazeni; i++) {
+			ods.append("\t");
+		}
+		
+		String nl = "\r\n";
+		vysledek.append(ods+"<auto id=\""+this.id+"\"  typ=\""+this.typ+"\">"+nl);
+		for (int i = 0; i < 7; i++) {			
+			vysledek.append(ods+"\t<den cislo=\""+i+"\">"+nl);
+			vysledek.append(statistikaXMLDen(i,odsazeni+2));
+			vysledek.append(ods+"\t</den>"+nl);
+		}
+		vysledek.append(ods+"</auto>"+nl);
+		
+		return vysledek.toString();
+	}
+	
+	/**
+	 * Metoda vrati statistiku pro 1 den v XML formatu.
+	 * @param odsazeni	Pocet tabulatoru jako odsazeni.
+	 * @return	Statistika v XML.
+	 */
+	public String statistikaXMLDen(int den, int odsazeni)
+	{
+		int d =  den;
+		if (statistika[d] == null || den < 0 || den > 0 )
+		{
+			return "";
+		}
+		if(statistika[d].size() == 0)
+		{
+			return "";
+		}
+		
+		/* struktura
+		 * <cesta c=1>
+		 * 		<stat zaznam 1 />
+		 * 		<stat zaznam 2 />
+		 * 		...
+		 * </cesta>
+		 * <cesta c=2>
+		 * 		...
+		 * </cesta>
+		 */
+		
+		//odsazeni
+		StringBuffer ods = new StringBuffer();
+		StringBuffer vysledek = new StringBuffer();
+		for (int i = 0; i < odsazeni; i++) {
+			ods.append("\t");
+		}
+		
+		int pocC = 0; //cislo cesty od 0
+		String nl = "\r\n";
+		LinkedList<statZaznam[]> st = statistika[d];
+		for(statZaznam[] sz : st)
+		{
+			vysledek.append(ods+"<cesta id=\""+pocC+"\" >"+nl);
+			for (int i = 0; i < sz.length; i++) {
+				vysledek.append(sz[i].toXMLTags(odsazeni+1));
+			}
+			vysledek.append(ods+"</cesta>"+nl);
+			pocC++;
+		}
+		
+		return vysledek.toString();
+	}
+	
+	/**
+	 * Prepravka pro vytvoreni vysledne statistiky.
+	 * 
+	 * @author Zdenek Vales
+	 *
+	 */
+	protected class statZaznam
+	{
+		/**
+		 * ID uzlu kterym auto projizdelo, pripadne v nem vykladalo/nakladalo.
+		 */
+		public int idUzlu;
+		
+		/**
+		 * Naklad vylozeny v uzlu. Pokud je -1 auto pouze projizdelo.
+		 */
+		public int naklad;
+		
+		/**
+		 * Sudy vyzvednute v hospode.
+		 */
+		public int vyzvednuteSudy;
+
+		
+		public statZaznam(int idHospody, int naklad, int vyzvednuteSudy) {
+			super();
+			this.idUzlu = idHospody;
+			this.naklad = naklad;
+			this.vyzvednuteSudy = vyzvednuteSudy;
+		}
+		
+		/**
+		 * Metoda prevede statisticky zaznam na 1 XML element. 
+		 * @param odsazeni Pocet tabulatoru vlozeny pred element.
+		 * @return XML element.
+		 */
+		public String toXMLTags(int odsazeni)
+		{
+			//vyrobeni odsazeni
+			StringBuffer ods = new StringBuffer();
+			for (int i = 0; i < odsazeni; i++) {
+				ods.append("\t");
+			}
 			
+			//zadne vykladani ani nakladani, vratit pouze id uzlu
+			if(naklad < 0)
+			{
+				return ods.toString()+"<uzel id=\""+this.idUzlu+"\" />\r\n";
+			}
+			else
+			{
+				return ods.toString()+"<uzel id=\""+this.idUzlu+"\" "
+								+ "		vylozeno=\""+this.naklad+"\" "
+								+ "		nalozenoSudu=\""+this.vyzvednuteSudy+"\" />";
+			}
+		}
 	}
 }

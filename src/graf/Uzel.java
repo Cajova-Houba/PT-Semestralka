@@ -124,7 +124,7 @@ public class Uzel{
 	public void vykresliCesty(Graphics2D g2, float Xmeritko, float Ymeritko)
 	{
 		Color puvodniC = g2.getColor();
-		g2.setColor(Color.black);	
+		g2.setColor(Color.BLACK);	
 		
 		float w = 3*Xmeritko;
 		int x1 = (int)(this.poloha[0] * Xmeritko - (int)(w/2));

@@ -1,5 +1,7 @@
 package graf;
 
+import graf.Auto.statZaznam;
+
 import java.util.LinkedList;
 import java.util.Observable;
 
@@ -27,6 +29,7 @@ public class Cisterna extends Auto{
 		this.nalozenoCas = cas;
 		this.cesta = new LinkedList<Integer>();
 		this.poloha = new float[2];
+		this.typ = "Cisterna";
 	}
 	
 	
@@ -91,11 +94,20 @@ public class Cisterna extends Auto{
 					System.out.println("Auto "+this.id+" (cisterna) se vratilo z okruzni jizdy v case: " + Simulator.getCas().toString());
 					this.jede = false;
 					this.kDispozici = true;
+					//zapsani konecneho bodu - prekladiste
+					if(statCesta != null)
+					{
+						statCesta.add(new statZaznam(this.DOMOV, -1, 0));
+					}
+					
+					//zapsani statisticke cesty do statistiky
+					super.vlozStatCestu(statCesta);
 				}
 				
-				this.cesta.removeFirst();
+				
 				//nakladak zkusi vylozit pokud je v cili
 				this.dobaVykladani = super.vyloz();
+				this.cesta.removeFirst();
 				
 				
 			}

@@ -122,6 +122,7 @@ public class Pivovar extends Skladiste{
 		{
 			cist.kDispozici = false;
 			cist.jede = true;
+			cist.novaStatCesta();
 		}
 		else
 		{
@@ -197,6 +198,7 @@ public class Pivovar extends Skladiste{
 		if(this.vozy.isEmpty())
 		{
 			cist = new Cisterna(Simulator.getCas(),this.id);
+			sim.auta.add(cist);
 			sim.addObserver(cist);
 			this.vozy.add(cist);
 			return this.vozy.get(0);

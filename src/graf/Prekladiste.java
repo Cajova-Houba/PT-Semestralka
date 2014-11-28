@@ -128,6 +128,8 @@ public class Prekladiste extends Skladiste{
 		{
 			nakl.kDispozici = false;
 			nakl.jede = true;
+			//vytvoreni nove polozky seznamu pro statistiku
+			nakl.novaStatCesta();
 		}
 		else
 		{
@@ -204,6 +206,7 @@ public class Prekladiste extends Skladiste{
 		if(this.vozy.isEmpty())
 		{
 			nakl = new Nakladak(Simulator.getCas(),this.id);
+			sim.auta.add(nakl);
 			sim.addObserver(nakl);
 			this.vozy.add(nakl);
 			return this.vozy.get(0);
@@ -228,7 +231,7 @@ public class Prekladiste extends Skladiste{
 			return this.vozy.getLast();
 		}
 	}
-
+	
 	@Override
 	public void prijmiNaklad(Objednavka ob, int idAuta) {
 		// TODO Auto-generated method stub

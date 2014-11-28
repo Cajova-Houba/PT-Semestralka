@@ -2,6 +2,7 @@ package main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
@@ -9,6 +10,7 @@ import java.util.TreeMap;
 
 import javax.swing.Timer;
 
+import graf.Auto;
 import graf.HospodaSud;
 import graf.HospodaTank;
 import graf.Pivovar;
@@ -43,6 +45,11 @@ public class Simulator extends Observable{
 	public static Map<Integer, HospodaTank> hospodyTank = new TreeMap<Integer, HospodaTank>();
 	
 	/**
+	 * Seznam vsech vytvorenych vozu.
+	 */
+	public LinkedList<Auto> auta;
+	
+	/**
 	 * matice vzdalenosti sousedu - delky cest
 	 */
 	public Float[][] delkyCest; 
@@ -72,6 +79,7 @@ public class Simulator extends Observable{
 	public Simulator(){
 		
 		soucCas = new Cas();
+		auta = new LinkedList<Auto>();
 		timerCas = new Timer(10, new ActionListener() {
 			
 			@Override
@@ -81,7 +89,8 @@ public class Simulator extends Observable{
 				{
 					timerCas.stop();
 					addLog(KONCICI_HLASKA);
-					MainApp.vytvorStatistiku();
+					MainApp.vytvorStatistikuHospod("hospody-statistika.xml");
+					MainApp.vytvorStatistikuAut("auta-statistika.xml");
 					return;
 				}
 				

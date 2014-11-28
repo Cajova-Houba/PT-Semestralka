@@ -22,6 +22,7 @@ public Kamion(Cas cas, int domov){
 		this.nalozenoCas = cas;
 		this.cesta = new LinkedList<Integer>();
 		this.poloha = new float[2];
+		this.typ = "Kamion";
 	}
 	
 }
